@@ -1,0 +1,25 @@
+.homeContainer {
+  padding-top: 70px;
+}
+.homeContent {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  margin: 10px 40px;
+  background: #d9d9d9;
+  color: #0e4be8;
+  border-radius: 10px;
+}
+.homeCard {
+  margin-left: 30px;
+}
+.search {
+  display: flex;
+  justify-content: center;
+}
+.searchBar {
+  justify-content: center;
+  text-align: center;
+  width: 70vw;
+  height: 5vh;
+}
