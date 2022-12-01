@@ -1,27 +1,20 @@
 import React, { useState, useEffect } from "react";
 import classes from "./home.module.css";
-
-// import UserService from "../../services/user.service";
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { getQuestions } from '../../features/questionSlice'
 
 const Home = () => {
-  // const [content, setContent] = useState("");
   const [query, setQuery] = useState("");
+  const dispatch = useDispatch()
+  const { questions, loading } = useSelector((state) => state.posts)
 
-  // useEffect(() => {
-  //   // UserService.getPublicContent().then(
-  //   //   (response) => {
-  //   //     setContent(response.data);
-  //   //   },
-  //   //   (error) => {
-  //   //     const _content =
-  //   //       (error.response && error.response.data) ||
-  //   //       error.message ||
-  //   //       error.toString();
+  useEffect(() => {
+    dispatch(getQuestions())
+  }, [])
 
-  //   //     setContent(_content);
-  //   //   }
-  //   // );
-  // }, []);
+  if (loading) return <p>Loading...</p>
+
 
   return (
     <div className={classes.homeContainer}>
@@ -34,6 +27,7 @@ const Home = () => {
       </div>
       <div className={classes.homeContent}>
         <div className={classes.homeCard}>
+          {}
           <h3>title</h3>
           <p>
             sdfhjbcvnxhdfg hdfjghdfhjvv hdfjvhj djhdfjg jdhgjfdgj jgdjfhjfgh
