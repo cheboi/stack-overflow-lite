@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { v4 } = require("uuid");
 const dotenv = require("dotenv");
 const { exec, query } = require("../DatabaseHelpers/dbhelper.js");
 
@@ -7,6 +8,7 @@ dotenv.config();
 
 const signupUser = async (req, res) => {
   try {
+    const id = v4();
     const { firstname, lastname, username, email, password } = req.body;
     const hashedpassword = await bcrypt.hash(password, 8);
     await exec("addUser", {
