@@ -1,37 +1,72 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
+const URL =""
 const initialState = {
   questions: [],
-  loading: false,
-}
+  status: "idle",
+};
 
-const getQuestions = createAsyncThunk(
-    'questions/getQuestions',
-    async (thunkAPI) => {
-      const res = await axios.get('').then(
-      (data) => data.json()
-    )
-    return res
-})
+export const getQuestions = createAsyncThunk(
+  "questions/getQuestions",
+  async () => {
+    const response = await axios.get(URL);
+    let ourdata = [];
+    for (let key in response.data) {
+      ourdata.push({
+        id:key,
+        title: response.data[key].title,
+        description: response.data[key].description,
+      });
+    }
+    console.log(ourdata);
+    return ourdata;
+  }
+);
 
+export const askQuestion = createAsyncThunk(
+  "questions/askedQuestion",
+  async (initialQuestion) => {
+    const response = await axios.post(URL, initialQuestion);
+    return response.data;
+  }
+);
 
 export const questionSlice = createSlice({
-    name: 'questions',
-    initialState,
-    reducers: {},
-    extraReducers: {
-      [getQuestions.pending]: (state) => {
-        state.loading = true
+  name: "questions",
+  initialState,
+  reducers: {
+    questionAsked: {
+      reducer(state, action) {
+        state.questions.push(action.payload);
       },
-      [getQuestions.fulfilled]: (state, { payload }) => {
-        state.loading = false
-        state.questions = payload
-      },
-      [getQuestions.rejected]: (state) => {
-        state.loading = false
+      prepare(title, description) {
+        return {
+          payload: {
+            title,
+            description,
+          },
+        };
       },
     },
-  })
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getQuestions.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getQuestions.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.questions = action.payload;
+      })
+      .addCase(getQuestions.rejected, (state, action) => {
+        state.status = "failed";
+        state.questions = action.payload.message.error;
+      });
+  },
+});
 
-export const quaestionReducer = questionSlice.reducer
+const {getQUestions } = questionSlice.actions;
+export const selectAllQuestions = (state) => state.questions.questions;
+
+export default questionSlice.reducer;

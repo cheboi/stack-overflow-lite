@@ -52,8 +52,8 @@ const Login = () => {
   }
 
   return (
-    <div className="signContinue">
-      <div className="card card-container">
+    <div className={style.signContinue}>
+      <div className={style.cardcontainer}>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -62,7 +62,8 @@ const Login = () => {
           <Form>
             <div className="form-group">
               <label htmlFor="username">Username</label>
-              <Field name="username" type="text" className="form-control" />
+              <br />
+              <Field name="username" type="text" className={style.descriptionField} placeholder="User Name" />
               <ErrorMessage
                 name="username"
                 component="div"
@@ -71,8 +72,8 @@ const Login = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <Field name="password" type="password" className="form-control" />
+              <label htmlFor="password">Password</label> <br />
+              <Field name="password" type="password" className={style.descriptionField} placeholder="Password" />
               <ErrorMessage
                 name="password"
                 component="div"

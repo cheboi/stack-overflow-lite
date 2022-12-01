@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getQuestions, selectAllQuestions } from "../../features/questionSlice";
+
 import classes from "./home.module.css";
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { getQuestions } from '../../features/questionSlice'
 
 const Home = () => {
   const [query, setQuery] = useState("");
-  const dispatch = useDispatch()
-  const { questions, loading } = useSelector((state) => state.posts)
+  const dispatch = useDispatch();
+  const questions = useSelector(selectAllQuestions);
+  // const productStatus = useSelector(getProductsStatus);
 
   useEffect(() => {
-    dispatch(getQuestions())
-  }, [])
+    dispatch(getQuestions());
+  }, []);
 
-  if (loading) return <p>Loading...</p>
-
-
+  console.log(questions);
   return (
     <div className={classes.homeContainer}>
       <div className={classes.search}>
@@ -26,7 +25,7 @@ const Home = () => {
         />
       </div>
       <div className={classes.homeContent}>
-        <div className={classes.homeCard}>
+        <div className={classes.homeCard} >
           {}
           <h3>title</h3>
           <p>

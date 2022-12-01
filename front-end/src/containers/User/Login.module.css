@@ -1,6 +1,13 @@
 .signContinue {
-  width: 360px;
-  height: 574px;
-  left: 0px;
-  top: -1px;
+  padding-top: 80px;
+  width: 400px;
+  margin: 16px auto;
+  font-size: 16px;
+}
+.cardcontainer {
+  background: #ebebeb;
+  padding: 12px;
+}
+.descriptionField{
+  width: 20vw;
 }
