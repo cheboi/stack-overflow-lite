@@ -54,16 +54,22 @@ const Login = () => {
   return (
     <div className={style.signContinue}>
       <div className={style.cardcontainer}>
+        <h2>welcome back!</h2>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleLogin}
         >
           <Form>
-            <div className="form-group">
+            <div className={style.formGroup}>
               <label htmlFor="username">Username</label>
               <br />
-              <Field name="username" type="text" className={style.descriptionField} placeholder="User Name" />
+              <Field
+                name="username"
+                type="text"
+                className={style.descriptionField}
+                placeholder="User Name"
+              />
               <ErrorMessage
                 name="username"
                 component="div"
@@ -73,23 +79,27 @@ const Login = () => {
 
             <div className="form-group">
               <label htmlFor="password">Password</label> <br />
-              <Field name="password" type="password" className={style.descriptionField} placeholder="Password" />
+              <Field
+                name="password"
+                type="password"
+                className={style.descriptionField}
+                placeholder="Password"
+              />
               <ErrorMessage
                 name="password"
                 component="div"
-                className="alert alert-danger"
+                className={style.formControl}
+                style={{Color: "red"}}
               />
             </div>
 
             <div className="form-group">
               <button
                 type="submit"
-                className="btn btn-primary btn-block"
+                className={style.btnPrimary}
                 disabled={loading}
               >
-                {loading && (
-                  <span className="spinner-border spinner-border-sm"></span>
-                )}
+                {loading && <span className=""></span>}
                 <span>Login</span>
               </button>
             </div>

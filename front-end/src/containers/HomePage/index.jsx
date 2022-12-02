@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getQuestions, selectAllQuestions } from "../../features/questionSlice";
 
@@ -8,7 +9,6 @@ const Home = () => {
   const [query, setQuery] = useState("");
   const dispatch = useDispatch();
   const questions = useSelector(selectAllQuestions);
-  // const productStatus = useSelector(getProductsStatus);
 
   useEffect(() => {
     dispatch(getQuestions());
@@ -25,13 +25,12 @@ const Home = () => {
         />
       </div>
       <div className={classes.homeContent}>
-        <div className={classes.homeCard} >
-          {}
-          <h3>title</h3>
-          <p>
-            sdfhjbcvnxhdfg hdfjghdfhjvv hdfjvhj djhdfjg jdhgjfdgj jgdjfhjfgh
-          </p>
-        </div>
+        {questions.map((question) => (
+          <div className={classes.homeContent} key={question.id}>
+            <h3>{question.title}</h3>
+            <Link to={question.id}>{question.description}</Link>
+          </div>
+        ))}
       </div>
     </div>
   );

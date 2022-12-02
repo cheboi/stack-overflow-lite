@@ -90,7 +90,7 @@ const Register = () => {
                     <ErrorMessage
                       name="firstname"
                       component="div"
-                      className="alert-danger"
+                      className={classes.alertDanger}
                     />
                   </div>
                   <div className="form-group">

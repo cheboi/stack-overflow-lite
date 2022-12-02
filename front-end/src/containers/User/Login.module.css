@@ -8,6 +8,19 @@
   background: #ebebeb;
   padding: 12px;
 }
-.descriptionField{
-  width: 20vw;
+.descriptionField {
+  width: 99%;
+  height: 25px;
+}
+.btnPrimary {
+  width: 100%;
+  height: 30px;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+.formGroup {
+  margin-bottom: 20px;
+}
+.alertDanger{
+  color: red;
 }

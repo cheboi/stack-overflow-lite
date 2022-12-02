@@ -1,33 +1,24 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const URL = "";
+const URL =""
 const initialState = {
-  questions: [],
+  comments: [],
   status: "idle",
 };
 
-export const getQuestions = createAsyncThunk(
-  "questions/getQuestions",
-  async () => {
-    const response = await axios.get(URL);
-    let ourdata = [];
-    for (let key in response.data) {
-      ourdata.push({
-        id: key,
-        title: response.data[key].title,
-        description: response.data[key].description,
-      });
-    }
-    console.log(ourdata);
-    return ourdata;
+export const getUserComments = createAsyncThunk(
+  "comments/getUserComments",
+  async (userId) => {
+    const response = await axios.get(URL, userId);
+    return response.data;
   }
 );
 
-export const askQuestion = createAsyncThunk(
-  "questions/askedQuestion",
-  async (initialQuestion) => {
-    const response = await axios.post(URL, initialQuestion);
+export const userAskQuestions = createAsyncThunk(
+  "questions/userAskedQuestion",
+  async (UserId) => {
+    const response = await axios.post(URL, userId);
     return response.data;
   }
 );
@@ -66,7 +57,7 @@ export const questionSlice = createSlice({
   },
 });
 
-const { getQUestions } = questionSlice.actions;
+const {getQUestions } = questionSlice.actions;
 export const selectAllQuestions = (state) => state.questions.questions;
 
 export default questionSlice.reducer;

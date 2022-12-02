@@ -4,3 +4,6 @@
 button{
   background: #90A1D8;
 }
+ErrorMessage{
+  color: red;
+}

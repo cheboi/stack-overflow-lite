@@ -5,6 +5,9 @@ import Home from "./containers/HomePage";
 import Askquestion from "./containers/AskQuestions";
 import Login from "./containers/User/Login";
 import Register from "./containers/User/signUp";
+import Answers from "./containers/Answers"
+
+//E:\theJitu\the-final\stack-overflow-lite\front-end\src\containers\Answers
 
 function App() {
   return (
@@ -16,6 +19,7 @@ function App() {
           <Route path="askquestion" element={<Askquestion />} />
           <Route path="signin" element={<Login />} />
           <Route path="signup" element={<Register />} />
+          <Route path="answers" element={<Answers />} />
         </Route>
       </Routes>
     </BrowserRouter>
