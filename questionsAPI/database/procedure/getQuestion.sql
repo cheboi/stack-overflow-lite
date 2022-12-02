@@ -1,0 +1,6 @@
+CREATE OR ALTER PROCEDURE getQuestions
+AS
+BEGIN
+SELECT * FROM dbo.QuestionsTable
+
+END
