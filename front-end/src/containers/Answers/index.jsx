@@ -27,7 +27,7 @@ const Answers = () => {
             <GoTriangleDown />
           </div>
           <div className={classes.questionSections}>
-            <p>Questions will be displayes</p>
+            <p>Ansers will be displayed Here</p>
           </div>
         </div>
         <div className={classes.homeCard}>

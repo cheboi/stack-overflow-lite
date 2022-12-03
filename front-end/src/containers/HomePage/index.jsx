@@ -1,22 +1,52 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getQuestions, selectAllQuestions } from "../../features/questionSlice";
+import {
+  getQuestions,
+  selectAllQuestions,
+  getQuestionStatus,
+  getErrorStatus,
+} from "../../features/questionSlice";
 
 import classes from "./home.module.css";
 
 const Home = () => {
   const [query, setQuery] = useState("");
+  const questionStatus = useSelector(getQuestionStatus);
+  const questionError = useSelector(getErrorStatus);
   const dispatch = useDispatch();
   const questions = useSelector(selectAllQuestions);
 
   useEffect(() => {
-    dispatch(getQuestions());
-  }, []);
+    // if (questionStatus === "idle") {
+      dispatch(getQuestions());
+    // }
+  }, [questions, dispatch]);
 
-  console.log(questions);
+  console.log("List Of Questions" + questions);
+  let content2;
+
+  if (questionStatus === "loading") {
+    content2 = <p>Loading...</p>;
+  } else if (questionStatus === "succeeded") {
+    content2 = questions.map((p) => {
+      return (
+        <article>
+          <div className={classes.homeContent} key={p.id}>
+            <div className="product-details">
+              <h1>{p?.title}</h1>
+              <p className="description">{p?.description}</p>
+            </div>
+          </div>
+        </article>
+      );
+    });
+  } else if (questionStatus === "failed") {
+    content2 = <p>Error : {questionError}</p>;
+  }
+
   return (
-    <div className={classes.homeContainer}>
+    <section className={classes.homeContainer}>
       <div className={classes.search}>
         <input
           className={classes.searchBar}
@@ -24,16 +54,22 @@ const Home = () => {
           onChange={(event) => setQuery(event.target.value)}
         />
       </div>
-      <div className={classes.homeContent}>
-        {questions.map((question) => (
-          <div className={classes.homeContent} key={question.id}>
-            <h3>{question.title}</h3>
-            <Link to={question.id}>{question.description}</Link>
-          </div>
-        ))}
-      </div>
-    </div>
+      <div className={classes.homeContent}>{content2}</div>
+    </section>
   );
+  // return (
+  //   <div >
+  //
+  //     <div >
+  //       {questions.map((question) => (
+  //         <div >
+  //           <h3>{question.title}</h3>
+  //           <Link to={question.id}>{question.description}</Link>
+  //         </div>
+  //       ))}
+  //     </div>
+  //   </div>
+  // );
 };
 
 export default Home;

@@ -11,7 +11,10 @@
   border-radius: 10px;
 }
 .homeCard {
-  margin-left: 30px;
+  display: flex;
+  margin: 20px;
+  border: aqua;
+  border: double;
 }
 .search {
   display: flex;
@@ -22,4 +25,8 @@
   text-align: center;
   width: 70vw;
   height: 5vh;
+}
+.votesSection{
+  background: #d9d9d9;
+  margin: 20px;
 }

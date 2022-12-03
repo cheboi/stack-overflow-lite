@@ -1,39 +1,24 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const URL = "http://localhost:4000/questions";
+const URL =""
 const initialState = {
-  questions: [],
-  status: "idle", //'idle' | 'loading' | 'succeeded' | 'failed'
-  error: null,
+  comments: [],
+  status: "idle",
 };
 
-export const getQuestions = createAsyncThunk(
-  "questions/getQuestions",
-  async () => {
-    const response = await axios
-      .get("http://localhost:4000/questions")
-      .then((res) => {
-        console.log(res.data);
-        return res.data;
-      });
-    let ourdata = [];
-    for (let key in response.data) {
-      ourdata.push({
-        id: key,
-        title: response.data[key].title,
-        description: response.data[key].description,
-      });
-    }
-    console.log(ourdata);
-    return ourdata;
+export const getUserComments = createAsyncThunk(
+  "comments/getUserComments",
+  async (userId) => {
+    const response = await axios.get(URL, userId);
+    return response.data;
   }
 );
 
-export const askQuestion = createAsyncThunk(
-  "questions/askedQuestion",
-  async (initialQuestion) => {
-    const response = await axios.post(URL, initialQuestion);
+export const userAskQuestions = createAsyncThunk(
+  "questions/userAskedQuestion",
+  async (UserId) => {
+    const response = await axios.post(URL, userId);
     return response.data;
   }
 );
@@ -72,9 +57,7 @@ export const questionSlice = createSlice({
   },
 });
 
-// const { getQUestions } = questionSlice.actions;
+const {getQUestions } = questionSlice.actions;
 export const selectAllQuestions = (state) => state.questions.questions;
-export const getQuestionStatus = (state) => state.questions.status;
-export const getErrorStatus = (state) => state.questions.error;
 
 export default questionSlice.reducer;
