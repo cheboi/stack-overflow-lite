@@ -1,3 +1,22 @@
-.Container{
-    background: #f44563;
+.Container {
+  background: #e9d3d7;
+  padding: 80px;
+  justify-content: center;
+}
+.ProfileSection {
+  width: 70vw;
+  padding: 80px;
+}
+.Numbers {
+  font-weight: bolder;
+  color: rgb(58, 58, 255);
+  font-size: larger;
+  margin-left: 30px;
+}
+.SpanActivity {
+  font-size: larger;
+  font-weight: 600;
+}
+.UserName {
+  margin-left: 0;
 }

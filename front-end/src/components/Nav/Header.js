@@ -7,23 +7,26 @@ const Header = () => {
       <header>
         <nav className="nav">
           <ul className="nav-ul">
-          <li className="nav-list">
+            <li className="nav-list">
+              <button className="nav-button">
+                <Link to="/profile">Profile</Link>
+              </button>
               <button className="nav-button">
                 <Link to="/signup">SignIn</Link>
               </button>
             </li>
-             <li className="nav-list">
+            <li className="nav-list">
               <button className="nav-button">
                 <Link to="/signin">SignIn</Link>
               </button>
             </li>
             <li className="nav-list">
-            <button className="nav-button">
+              <button className="nav-button">
                 <Link to="/askquestion">Ask</Link>
               </button>
             </li>
             <li className="nav-list">
-            <button className="nav-button">
+              <button className="nav-button">
                 <Link to="/">Home</Link>
               </button>
             </li>
