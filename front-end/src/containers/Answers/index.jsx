@@ -27,19 +27,37 @@ const Answers = () => {
             <GoTriangleDown />
           </div>
           <div className={classes.questionSections}>
-            <p>Ansers will be displayed Here</p>
+            <p style={{ width: "60vw" }}>Ansers will be displayed Here</p>
           </div>
+          <ul className={classes.anSwerDetail}>
+            <li>User</li>
+            <li>Date</li>
+            <li>Prefered</li>
+            <li>
+              <a>comments</a>
+            </li>
+          </ul>
+          <button className={classes.commentCard}>Comment</button>
         </div>
         <div className={classes.homeCard}>
           <div className={classes.votesSection}>
             <GoTriangleUp />
             <br />
-            {}
+              4
+            <br />
             <GoTriangleDown />
           </div>
           <div className={classes.questionSections}>
-            <p>Questions will be displayes</p>
+            <p style={{ width: "60vw" }}>Questions will be displayed Here</p>
           </div>
+          <ul className={classes.anSwerDetail}>
+            <li>User</li>
+            <li>Date</li>
+            <li>Prefered</li>
+            <li>
+              <a>comments</a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

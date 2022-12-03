@@ -26,7 +26,30 @@
   width: 70vw;
   height: 5vh;
 }
-.votesSection{
+.votesSection {
   background: #d9d9d9;
   margin: 20px;
+}
+GoTriangleUp {
+  background: #0e4be8;
+  margin-top: 15px;
+  /* width: 20px; */
+  height: 30px;
+}
+.commentCard {
+  /* right: 0; */
+  padding-right: 0;
+  height: 30px;
+  /* buttom: 0; */
+  top: revert;
+  margin-left: 0;
+  margin-top: 88px;
+}
+.anSwerDetail {
+  list-style: none;
+  width: 20vw;
+}
+.questionSections {
+  margin-left: 30px;
+  border: 2px solid;
 }
