@@ -53,7 +53,7 @@ const updateQuestion = async (req, res) => {
         .execute("insertQuestion");
       res.status(200).json({ message: "question successfully  Updated!!" });
     } else {
-      res.status(404).json({ message: `thi question ${id} is not found` });
+      res.status(404).json({ message: `this question ${id} is not found` });
     }
   } catch (error) {
     res.status(404).json({ error: error.message });
