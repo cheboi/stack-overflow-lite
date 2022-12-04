@@ -1,5 +1,4 @@
 .signUpForm {
-
 }
 .cardContainer {
   position: absolute;
@@ -8,20 +7,20 @@
   flex-direction: column;
   align-items: center;
   border-radius: 20px;
-  top: 20%;
-  bottom: 20%;
-  right: 20%;
-  left: 20%;
+  top: 15%;
+  left: 30%;
   border-style: solid;
   background: #d9d9d9;
-  height: 700px;
-  width: 400px;
+  height: 600px;
+  width: 465px;
 }
+
 .formControl {
-  width: 100%;
+  width: 398px;
   height: 25px;
   border-radius: 5px;
   margin-top: 10px;
+  color: red;
 }
 h2 {
   color: #0e4be8;
@@ -37,6 +36,6 @@ h2 {
   border-radius: 5px;
   margin-top: 10px;
 }
-.alertDanger{
+.alertDanger {
   color: red;
 }

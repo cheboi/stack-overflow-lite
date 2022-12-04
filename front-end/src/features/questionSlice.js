@@ -73,8 +73,8 @@ export const questionSlice = createSlice({
 });
 
 // const { getQUestions } = questionSlice.actions;
-export const selectAllQuestions = (state) => state.questions.questions;
-export const getQuestionStatus = (state) => state.questions.status;
-export const getErrorStatus = (state) => state.questions.error;
+export const selectAllQuestions = (state) => state.questions?.questions;
+export const getQuestionStatus = (state) => state.questions?.status;
+export const getErrorStatus = (state) => state.questions?.error;
 
 export default questionSlice.reducer;

@@ -104,7 +104,7 @@ const Register = () => {
                     <ErrorMessage
                       name="lastname"
                       component="div"
-                      className="alert-danger"
+                      className={classes.alertDanger}
                     />
                   </div>
                   <div className={classes.formGroup}>
@@ -118,7 +118,7 @@ const Register = () => {
                     <ErrorMessage
                       name="username"
                       component="div"
-                      className="alert-danger"
+                      className={classes.alertDanger}
                     />
                   </div>
 
@@ -133,7 +133,7 @@ const Register = () => {
                     <ErrorMessage
                       name="email"
                       component="div"
-                      className="alert alert-danger"
+                      className={classes.alertDanger}
                     />
                   </div>
 
@@ -148,7 +148,7 @@ const Register = () => {
                     <ErrorMessage
                       name="password"
                       component="div"
-                      className="alert alert-danger"
+                      className={classes.alertDanger}
                     />
                   </div>
 

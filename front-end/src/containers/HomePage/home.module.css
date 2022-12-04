@@ -53,3 +53,7 @@ GoTriangleUp {
   margin-left: 30px;
   border: 2px solid;
 }
+.descriptionField {
+  width: 40vw;
+  height: 40vh;
+}

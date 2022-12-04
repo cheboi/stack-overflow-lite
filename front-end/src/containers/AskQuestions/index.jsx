@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 
@@ -13,12 +15,19 @@ const questionSchema = Yup.object().shape({
   description: Yup.string().min(2, "Too Short!").required("Required"),
 });
 const AskquestionForm = () => {
+  const navigate = useNavigate();
+  
+  // const handleSubmit = ()=>{
+    
+
+  // }
   return (
     <Formik
       initialValues={INITIAL_VALUES}
       validationSchema={questionSchema}
       onSubmit={({ setSubmitting }) => {
         alert("Form is validated! Submitting the form");
+        navigate("/");
         setSubmitting(false);
       }}
     >

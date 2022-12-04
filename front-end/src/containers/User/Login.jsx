@@ -73,7 +73,7 @@ const Login = () => {
               <ErrorMessage
                 name="username"
                 component="div"
-                className="alert alert-danger"
+                className={style.alertDanger}
               />
             </div>
 
@@ -88,8 +88,7 @@ const Login = () => {
               <ErrorMessage
                 name="password"
                 component="div"
-                className={style.formControl}
-                style={{Color: "red"}}
+                className={style.alertDanger}
               />
             </div>
 
