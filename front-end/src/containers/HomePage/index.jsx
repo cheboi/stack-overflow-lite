@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 import {
   getQuestions,
   selectAllQuestions,
@@ -16,10 +18,11 @@ const Home = () => {
   const questionError = useSelector(getErrorStatus);
   const dispatch = useDispatch();
   const questions = useSelector(selectAllQuestions);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // if (questionStatus === "idle") {
-      dispatch(getQuestions());
+    dispatch(getQuestions());
     // }
   }, [questions, dispatch]);
 
@@ -31,7 +34,7 @@ const Home = () => {
   } else if (questionStatus === "succeeded") {
     content2 = questions.map((p) => {
       return (
-        <article>
+        <article onClick={() => navigate()}>
           <div className={classes.homeContent} key={p.id}>
             <div className="product-details">
               <h1>{p?.title}</h1>
@@ -57,19 +60,6 @@ const Home = () => {
       <div className={classes.homeContent}>{content2}</div>
     </section>
   );
-  // return (
-  //   <div >
-  //
-  //     <div >
-  //       {questions.map((question) => (
-  //         <div >
-  //           <h3>{question.title}</h3>
-  //           <Link to={question.id}>{question.description}</Link>
-  //         </div>
-  //       ))}
-  //     </div>
-  //   </div>
-  // );
 };
 
 export default Home;
