@@ -37,10 +37,8 @@ GoTriangleUp {
   height: 30px;
 }
 .commentCard {
-  /* right: 0; */
   padding-right: 0;
   height: 30px;
-  /* buttom: 0; */
   top: revert;
   margin-left: 0;
   margin-top: 88px;
@@ -56,4 +54,8 @@ GoTriangleUp {
 .descriptionField {
   width: 40vw;
   height: 40vh;
+}
+.CommentContainer {
+  margin-top: 0px;
+  align-self: flex-end;
 }
