@@ -13,8 +13,9 @@
 .homeCard {
   display: flex;
   margin: 20px;
-  border: aqua;
-  border: double;
+  margin-bottom: 0px;
+  /* border: aqua;
+  border: double; */
 }
 .search {
   display: flex;
@@ -49,7 +50,7 @@ GoTriangleUp {
 }
 .questionSections {
   margin-left: 30px;
-  border: 2px solid;
+  /* border: 2px solid; */
 }
 .descriptionField {
   width: 40vw;
@@ -58,4 +59,9 @@ GoTriangleUp {
 .CommentContainer {
   margin-top: 0px;
   align-self: flex-end;
+  justify-content: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-content: flex-end;
+  align-items: flex-end;
 }

@@ -37,8 +37,10 @@ const Home = () => {
         <article onClick={() => navigate()}>
           <div className={classes.homeContent} key={p.id}>
             <div className="product-details">
-              <h1>{p?.title}</h1>
-              <p className="description">{p?.description}</p>
+              <Link to="/react">
+                <h1>{p?.title}</h1>
+                <p className="description">{p?.description}</p>
+              </Link>
             </div>
           </div>
         </article>
