@@ -7,10 +7,25 @@ const Header = () => {
       <header>
         <nav className="nav">
           <ul className="nav-ul">
+            <div style={{ marginLeft: "30px" }}>
+              <li className="nav-list">
+                <button className="nav-button">
+                  <Link to="/id:questions">Users Question 2</Link>
+                </button>
+              </li>
+              <li className="nav-list">
+                <button className="nav-button">
+                  <Link to="/id:answers">Answers 7</Link>
+                </button>
+              </li>
+              <li className="nav-list">
+                <button className="nav-button">
+                  <Link to="/profile">Profile</Link>
+                </button>
+              </li>
+            </div>
+
             <li className="nav-list">
-              <button className="nav-button">
-                <Link to="/profile">Profile</Link>
-              </button>
               <button className="nav-button">
                 <Link to="/signup">SignIn</Link>
               </button>
