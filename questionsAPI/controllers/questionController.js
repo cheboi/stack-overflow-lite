@@ -42,7 +42,7 @@ const updateQuestion = async (req, res) => {
 
     const pool = await mssql.connect(sqlConfig);
     const question = await (
-      await pool.request().input("id", mssql.VarChar, id).execute("getP")
+      await pool.request().input("id", mssql.VarChar, id).execute("getQuestion")
     ).recordset;
     if (question.length) {
       await pool
@@ -60,8 +60,42 @@ const updateQuestion = async (req, res) => {
   }
 };
 
+
+const getQuestionById = async (req, res) => {
+  try {
+    const{id}=req.params 
+   const question = await(await exec('getQuestionsById', {id})).recordset 
+    if(question.length){
+        res.status(200).json(question)
+    }else{
+       res.status(404).json({message: `question with id ${id} does not exist`}) 
+    }
+
+} catch (error) {
+     res.status(404).json({error:error.message})
+}
+};
+
+const deleteQuestion = async(req,res)=>{
+  try {
+      const {id}=req.params
+      const question = await(await exec('getQuestion', {id})).recordset 
+
+      if(question.length){
+          query(`DELETE FROM questionsTable WHERE id ='${id}'`)
+          res.status(200).json({message:'Question Deleted!!'})
+      }else{
+           res.status(404).json({message: `Question with id ${id} does not exist`}) 
+      }
+  } catch (error) {
+      res.status(404).json({error:error.message})
+  }
+}
+
 module.exports = {
   getQuestions,
   updateQuestion,
   askQuestion,
+  getQuestionById,
+  deleteQuestion
 };
