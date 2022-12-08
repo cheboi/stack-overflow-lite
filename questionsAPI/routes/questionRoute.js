@@ -10,8 +10,8 @@ const router = Router();
 
 router.get("/", getQuestions);
 router.post("", askQuestion);
-router.put("/:id", updateQuestion);
-router.get("/:id", verifyToken, getQuestionById);
-router.delete("/:id", verifyToken, deleteQuestion);
+router.put("/:id",updateQuestion);
+router.get("/:id", getQuestionById);
+router.delete("/:id", deleteQuestion);
 
 module.exports = { router };

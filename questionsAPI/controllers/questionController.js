@@ -20,15 +20,17 @@ const getQuestions = async (req, res) => {
 const askQuestion = async (req, res) => {
   try {
     const id = v4();
-    const { title, description } = req.body;
+    // id,  title,description, user_email, 
+    const { title, description, user_email, date_asked } = req.body;
     const pool = await mssql.connect(sqlConfig);
     await pool
       .request()
       .input("id", mssql.VarChar, id)
       .input("title", mssql.VarChar, title)
       .input("description", mssql.VarChar, description)
+      .input("user_email", mssql.VarChar, user_email)
+      .input("date_asked", mssql.DateTime, date_asked)
       .execute("askQuestion");
-
     res.status(201).json({ message: "question Asked" });
   } catch (error) {
     res.status(404).json({ error: error.message });
