@@ -1,6 +1,7 @@
 const express = require("express");
 const { router } = require("./routes/questionRoute");
-const { answerRoute } = require("./routes/answerRoute")
+const { answerRoute } = require("./routes/answerRoute");
+const { commentRoute } = require("./routes/commentRoute");
 const dotenv = require("dotenv");
 const cors = require("cors");
 
@@ -9,7 +10,8 @@ dotenv.config();
 app.use(express.json());
 app.use(cors());
 app.use("/questions", router);
-app.use("answers", answerRoute);
+app.use("/answers", answerRoute);
+app.use("/comment", commentRoute);
 
 app.listen(process.env.PORT || 4000, () => {
   console.log(`Server is Running on Port : ${process.env.PORT}`);

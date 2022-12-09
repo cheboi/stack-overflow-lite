@@ -20,7 +20,6 @@ const getQuestions = async (req, res) => {
 const askQuestion = async (req, res) => {
   try {
     const id = v4();
-    // id,  title,description, user_email, 
     const { title, description, user_email, date_asked } = req.body;
     const pool = await mssql.connect(sqlConfig);
     await pool
