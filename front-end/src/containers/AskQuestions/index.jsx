@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import axios from "axios";
 
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
@@ -16,18 +18,82 @@ const questionSchema = Yup.object().shape({
 });
 const AskquestionForm = () => {
   const navigate = useNavigate();
-  
-  // const handleSubmit = ()=>{
-    
 
-  // }
+  const dispatch = useDispatch();
+
+  // const [title, setTitle] = useState("");
+  // const [description, setDescription] = useState("");
+  // const [image, setImage] = useState("");
+  // const [price, setPrice] = useState();
+  // const [discountRate, setDiscountRate] = useState("");
+
+  // const [addRequestStatus, setAddRequestStatus] = useState("idle");
+
+  // const onTitleChanged = (e) => setTitle(e.target.value);
+  // const onDescriptionChanged = (e) => setDescription(e.target.value);
+  // const onPriceChanged = (e) => setPrice(e.target.value);
+  // const onDiscountChanged = (e) => setDiscountRate(e.target.value);
+  // const onImageChanged = (e) => setImage(e.target.value);
+
+  // const canSave =
+  //   [title, description, price, image, discountRate].every(Boolean) &&
+  //   addRequestStatus === "idle";
+
+  // const onSaveProductClicked = () => {
+  //   if (canSave) {
+  //     try {
+  //       setAddRequestStatus("pending");
+  //       dispatch(
+  //         addNewProduct({
+  //           title,
+  //           price,
+  //           image,
+  //           discountRate,
+  //           body: description,
+  //         })
+  //       ).unwrap();
+
+  //       setTitle("");
+  //       setDescription("");
+  //       setImage("");
+  //       setPrice("");
+  //       setDiscountRate("");
+  //     } catch (err) {
+  //       console.error("Failed to save the product", err);
+  //     } finally {
+  //       setAddRequestStatus("idle");
+  //     }
+  //   }
+  // };
+
+  // const handleSubmit = () => {};
   return (
     <Formik
       initialValues={INITIAL_VALUES}
       validationSchema={questionSchema}
-      onSubmit={({ setSubmitting }) => {
-        alert("Form is validated! Submitting the form");
-        navigate("/");
+      onSubmit={({ setSubmitting, data }) => {
+        // alert("Form is validated! Submitting the form");
+        // navigate("/");
+
+        console.log(data);
+        let formData = new FormData();
+        formData.append("questiontitle", data.queststiontitle);
+        formData.append("description", data.description);
+        // formData.append('password', data.password)
+
+        axios({
+          method: "POST",
+          url: "http://localhost:4000/questions",
+          data: formData,
+        })
+          .then(function (res) {
+            console.log(res);
+            // alert('Successfully signed up!');
+          })
+          .catch(function (res) {
+            console.log(res);
+          });
+
         setSubmitting(false);
       }}
     >
