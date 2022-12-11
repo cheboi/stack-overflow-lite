@@ -2,6 +2,7 @@ const mssql = require("mssql");
 const { v4 } = require("uuid");
 const sqlConfig = require("../Config/index");
 
+
 const getQuestions = async (req, res) => {
   try {
     const pool = await mssql.connect(sqlConfig);

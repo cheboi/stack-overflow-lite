@@ -1,5 +1,6 @@
 const mssql = require("mssql");
 const sqlConfig = require("../Config/index");
+
 class Connection {
   constructor() {
     this.connecttoDb();

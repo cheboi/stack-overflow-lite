@@ -62,7 +62,7 @@ const editAnswer = async (req, res) => {
       .input("downvote", downvote)
       .input("date_answered", date_answered)
       .execute("insertUpdateAnswer");
-    res.status(201).json({ message: "Aswer updated" });
+    res.status(201).json({ message: "Answer updated" });
   } catch (error) {
     res.status(404).json({ error: error.message });
   }

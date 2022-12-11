@@ -10,7 +10,7 @@ const commentRoute = Router();
 // commentRoute.get("/", getComments);
 commentRoute.post("", addComment);
 commentRoute.put("/:id", updateComment);
-commentRoute.get("/:id", getComment);
+commentRoute.get("/:answer_id", getComment);
 commentRoute.delete("/:id", removeComment);
 
 module.exports = { commentRoute };

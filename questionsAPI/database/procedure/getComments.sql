@@ -1,8 +1,8 @@
-CREATE PROCEDURE getComments(
-    @answer_id VARCHAR(100)
+CREATE OR ALTER PROCEDURE getComments(
+    @answer_id VARCHAR(50)
 )
   AS
   BEGIN
-  SELECT * FROM Comment
+  SELECT * FROM commentsTable
   WHERE  answer_id=@answer_id
 END

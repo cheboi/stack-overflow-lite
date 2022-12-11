@@ -6,10 +6,10 @@ require("dotenv").config();
 
 const addComment = async (req, res) => {
   try {
-    const user_email = req.headers["user_email"];
+    // const user_email = req.headers["user_email"];
     const id = uuid.v4();
     const date_commented = moment().format("YYYY-MM-DD HH:mm:ss");
-    const { comment, answer_id } = req.body;
+    const { comment, user_email, answer_id } = req.body;
     const pool = await mssql.connect(sqlConfig);
     await pool
       .request()
@@ -32,8 +32,8 @@ const getComment = async (req, res) => {
     const pool = await mssql.connect(sqlConfig);
     const response = await pool
       .request()
-      .input("answer_id", sql.VarChar(100), answer_id)
-      .execute("getComment");
+      .input("answer_id", mssql.VarChar(100), answer_id)
+      .execute("getComments");
     const comments  = await response.recordset;
     res.json(comments);
   } catch (error) {
@@ -42,19 +42,17 @@ const getComment = async (req, res) => {
 };
 const updateComment = async (req, res) => {
   try {
-    const user_id = req.headers["user_id"];
+    const user_email = req.headers["user_email"];
     const { answer_id } = req.params;
-    const { question_id, answer_descprition, upvote, downvote } = req.body;
-    const pool = await sql.connect(sqlConfig);
+    const { comment } = req.body;
+    const pool = await mssql.connect(sqlConfig);
     await pool
       .request()
-      .input("user_id", user_id)
-      .input("question_id", question_id)
-      .input("answer_id", sql.VarChar(100), answer_id)
-      .input("answer_descprition", answer_descprition)
-      .input("upvote", upvote)
-      .input("downvote", downvote)
-      .execute("insertUpdateAnswer");
+      .input("comment", comment)
+      .input("user_email", user_email)
+      .input("answer_id", mssql.VarChar(100), answer_id)
+
+      .execute("insertUpdateComment");
     res.status(201).json({ message: "Answer updated" });
   } catch (error) {
     res.status(404).json({ error: error.message });
@@ -66,7 +64,7 @@ const removeComment = async (req, res) => {
     const { id } = req.params;
     const pool = await mssql.connect(sqlConfig);
     const comment = await (
-      await pool.request().input("id", id).execute("getComments")
+      await pool.request().input("id", id).execute("getComment")
     ).recordset;
 
     if (comment.length) {
