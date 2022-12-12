@@ -14,22 +14,26 @@ class Connection {
   };
 
   createRequest = async (request, data = {}) => {
-    const keys = Object.keys(data);
-    keys.map((keyName) => {
-      const keyValue = data[keyName];
-      request.input(keyName, keyValue);
-    });
-    return request;
-  };
+    try {
+      const keys = Object.keys(data);
+      keys.map((key) => {
+        const keyValue = data[key];
+        request.input(key, keyValue);
+      });
 
+      return request;
+    } catch (error) {
+      return error.message;
+    }
+  };
   exec = async (storedproc, data = {}) => {
     try {
-      let request = await this.pool.request();
-      request = await this.createRequest(request, data);
-      const result = await request.execute(storedproc);
-      return result;
+      let request = await (await this.pool).request();
+      request = this.createRequest(request, data);
+      const results = await request.execute(storedproc);
+      return results;
     } catch (error) {
-      throw new Error(error.message);
+      return error.message;
     }
   };
   query = async (query) => {

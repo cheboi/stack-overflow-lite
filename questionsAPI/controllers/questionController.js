@@ -17,6 +17,17 @@ const getQuestions = async (req, res) => {
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
+
+  // try {
+  //   const questions = await exec("getQuestions");
+  //   if (questions.length) {
+  //     return res.status(200).json(questions);
+  //   } else {
+  //     res.status(404).json({ message: "No questions for now" });
+  //   }
+  // } catch (error) {
+  //   return res.status(404).json({ error: error.message });
+  // }
 };
 
 const askQuestion = async (req, res) => {
@@ -122,10 +133,42 @@ const findQuestions = async (req, res) => {
 
 const getMostAnsweredQuestion = async (req, res) => {
   try {
-    const { range } = req.query;
+    const { range } = req.query; 
+
+    const questions = await (await execute('uspMostAnsweredQuestion', { range })).recordset;
+
+    
+    if (questions.length) {
+      let question = questions.map(s => { return s.id });
+
+      const Questions = await (await execute('getQuestions')).recordset;
+
+      const QuestionFiltered = Questions.filter(q => question.includes(q.id));
+
+      return res.status(200).json({
+        msg: 'questions fetched',
+        data: QuestionFiltered
+      })
+    } else {
+      return res.status(404).json({
+        msg: 'Something went wrong please check your range',
+        data: []
+      })
+    }
+  } catch (error) {
+    return res.status(500).json({
+      msg: error
+    })
+  }
+
+};
+
+const getUserQuestions = async (req, res) => {
+  try {
+    const { currentUser } = req.user;
 
     const questions = await (
-      await exec("uspMostAnsweredQuestion", { range })
+      await execute("uspFindUserQuestions", { user_email: currentUser })
     ).recordset;
 
     if (questions.length > 0) {
@@ -135,7 +178,6 @@ const getMostAnsweredQuestion = async (req, res) => {
       });
     } else {
       return res.status(404).json({
-        msg: "Low range",
         data: [],
       });
     }
@@ -143,29 +185,6 @@ const getMostAnsweredQuestion = async (req, res) => {
     return res.status(500).json({
       msg: error,
     });
-  }
-};
-
-const getUserQuestions = async (req, res) => {
-  try {
-    const { currentUser } = req.user;
-
-    const questions = await (await execute('uspFindUserQuestions', { user_email: currentUser })).recordset;
-
-    if (questions.length > 0) {
-      return res.status(200).json({
-        msg: 'Questions fetched successfully',
-        data: questions
-      })
-    } else {
-      return res.status(404).json({
-        data: []
-      })
-    }
-  } catch (error) {
-    return res.status(500).json({
-      msg: error
-    })
   }
 };
 
@@ -177,5 +196,5 @@ module.exports = {
   deleteQuestion,
   findQuestions,
   getMostAnsweredQuestion,
-  getUserQuestions
+  getUserQuestions,
 };

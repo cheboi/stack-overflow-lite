@@ -3,8 +3,6 @@ CREATE TABLE answerTable (
     user_email varchar(50) NOT NULL,
 	question_id varchar(50) NOT NULL,
 	answer varchar(max) NOT NULL,
-	upvote int NOT NULL,
-	downvote int NOT NULL,
     isDeleted bit DEFAULT '0',
 	date_answered DATETIME,
 	FOREIGN KEY (user_email) REFERENCES usersTable(email),
