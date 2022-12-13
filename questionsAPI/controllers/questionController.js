@@ -77,8 +77,8 @@ const updateQuestion = async (req, res) => {
 const getQuestionById = async (req, res) => {
   try {
     const { id } = req.params;
-    const question = await (await exec("getQuestionsById", { id })).recordset;
-    if (question.length) {
+    const question = await (await exec("getQuestionById", { id })).recordset;
+    if (question.length > 1) {
       res.status(200).json(question);
     } else {
       res
@@ -93,7 +93,7 @@ const getQuestionById = async (req, res) => {
 const deleteQuestion = async (req, res) => {
   try {
     const { id } = req.params;
-    const question = await (await exec("getQuestion", { id })).recordset;
+    const question = await (await exec("getQuestionById", { id })).recordset;
 
     if (question.length) {
       query(`DELETE FROM questionsTable WHERE id ='${id}'`);
@@ -108,17 +108,19 @@ const deleteQuestion = async (req, res) => {
   }
 };
 
-const findQuestions = async (req, res) => {
+const searchQuesstion = async (req, res) => {
   try {
     const { value } = req.query;
-    const questions = await (
-      await exec("uspSearchQuestion", { value })
-    ).recordset;
+    console.log(value);
+    const questions =
+      (await (await exec("uspsearchQuestion", { value })).recordsets) || [];
 
-    if (questions.length > 0) {
-      return res.status(200).json({
-        data: questions,
-      });
+    const qn =  await exec('uspsearchQuestion', { value })
+
+    console.log(qn)
+
+    if (questions.length) {
+      return res.status(200).json({ questions });
     } else {
       return res.status(404).json({
         data: [],
@@ -126,58 +128,50 @@ const findQuestions = async (req, res) => {
     }
   } catch (error) {
     return res.status(500).json({
-      msg: error,
+      msg: error.message,
     });
   }
 };
 
-const getMostAnsweredQuestion = async (req, res) => {
-  try {
-    const { range } = req.query; 
 
-    const questions = await (await execute('uspMostAnsweredQuestion', { range })).recordset;
-
-    
-    if (questions.length) {
-      let question = questions.map(s => { return s.id });
-
-      const Questions = await (await execute('getQuestions')).recordset;
-
-      const QuestionFiltered = Questions.filter(q => question.includes(q.id));
-
-      return res.status(200).json({
-        msg: 'questions fetched',
-        data: QuestionFiltered
-      })
-    } else {
-      return res.status(404).json({
-        msg: 'Something went wrong please check your range',
-        data: []
-      })
+const getUserQuestions = async (req, res) => {
+  
+    try {
+  
+      const pool = await mssql.connect(sqlConfig);
+      const response = await pool.request().execute("mostAnswerQuestion");
+      const questions = await response.recordset;
+      res.json(questions);
+    } catch (error) {
+      res.status(404).json({ error: error.message });
     }
-  } catch (error) {
-    return res.status(500).json({
-      msg: error
-    })
-  }
 
 };
 
-const getUserQuestions = async (req, res) => {
+const getMostAnsweredQuestion = async (req, res) => {
   try {
-    const { currentUser } = req.user;
+    const { range } = req.query;
 
-    const questions = await (
-      await execute("uspFindUserQuestions", { user_email: currentUser })
-    ).recordset;
+    const questions =
+      (await (await execute("uspMostAnsweredQuestion", { range })).recordset) ||
+      [];
 
-    if (questions.length > 0) {
+    if (questions.length) {
+      let question = questions.map((s) => {
+        return s.id;
+      });
+
+      const Questions = await (await execute("getQuestions")).recordset;
+
+      const QuestionFiltered = Questions.filter((q) => question.includes(q.id));
+
       return res.status(200).json({
-        msg: "Questions fetched successfully",
-        data: questions,
+        msg: "questions fetched",
+        data: QuestionFiltered,
       });
     } else {
       return res.status(404).json({
+        msg: "Something went wrong please check your range",
         data: [],
       });
     }
@@ -194,7 +188,7 @@ module.exports = {
   askQuestion,
   getQuestionById,
   deleteQuestion,
-  findQuestions,
+  searchQuesstion,
   getMostAnsweredQuestion,
   getUserQuestions,
 };

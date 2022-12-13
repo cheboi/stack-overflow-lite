@@ -20,7 +20,7 @@ const addComment = async (req, res) => {
       .input("date_commented", date_commented)
       .execute("insertUpdateComment");
 
-    res.status(201).json({ message: "commented on  an answer" });
+    res.status(200).json({ message: "commented on  an answer" });
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
@@ -42,9 +42,11 @@ const getComment = async (req, res) => {
 };
 const updateComment = async (req, res) => {
   try {
-    const user_email = req.headers["user_email"];
+    // const user_email = req.headers["user_email"];
+
     const { answer_id } = req.params;
-    const { comment } = req.body;
+    const { id } = req.params;
+    const {user_email,  comment } = req.body;
     const pool = await mssql.connect(sqlConfig);
     await pool
       .request()

@@ -28,12 +28,12 @@ class Connection {
   };
   exec = async (storedproc, data = {}) => {
     try {
-      let request = await (await this.pool).request();
-      request = this.createRequest(request, data);
-      const results = await request.execute(storedproc);
-      return results;
+      let request = await this.pool.request();
+      request = await this.createRequest(request, data);
+      const result = await request.execute(storedproc);
+      return result;
     } catch (error) {
-      return error.message;
+      throw new Error(error.message);
     }
   };
   query = async (query) => {
