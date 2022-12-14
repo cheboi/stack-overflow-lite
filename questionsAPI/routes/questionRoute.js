@@ -6,20 +6,19 @@ const {
   askQuestion,
   getQuestionById,
   deleteQuestion,
-  findQuestions,
+  searchQuesstion,
   getMostAnsweredQuestion,
   getUserQuestions,
-} = require("../controllers/questionController");
+} = require("../controllers/questionController"); 
 const router = Router();
 
 router.get("/", getQuestions);
-router.post("",verifyToken, askQuestion);
-router.put("/:id",verifyToken, updateQuestion);
+router.post("", verifyToken, askQuestion);
+router.put("/:id", verifyToken,updateQuestion);
 router.get("/:id", getQuestionById);
 router.delete("/:id",verifyToken, deleteQuestion);
-router.get("/question/search", findQuestions);
-router.get("/question/mostanseredquestion", getMostAnsweredQuestion);
-router.get("/userquestions", verifyToken, getUserQuestions);
-
+router.get("/question/search/", searchQuesstion);
+router.get("/question/mostanseredquestion/",verifyToken, getMostAnsweredQuestion);
+router.get("/userquestions/:id", verifyToken, getUserQuestions);
 
 module.exports = { router };

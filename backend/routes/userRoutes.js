@@ -6,7 +6,7 @@ const userRoutes= Router()
 
 userRoutes.post('/signup', signupUser)
 userRoutes.post('/login', loginUser)
-userRoutes.get('/home',verifyToken, homepage)
+// userRoutes.get('/home',verifyToken, homepage)
 
 
 module.exports={

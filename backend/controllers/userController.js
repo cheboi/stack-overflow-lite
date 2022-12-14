@@ -8,7 +8,6 @@ dotenv.config();
 
 const signupUser = async (req, res) => {
   try {
-    const id = v4();
     const { firstname, lastname, username, email, password } = req.body;
     const hashedpassword = await bcrypt.hash(password, 8);
     await exec("addUser", {
@@ -20,7 +19,7 @@ const signupUser = async (req, res) => {
     });
     return res.status(201).json({ message: "User Added Successfully" });
   } catch (error) {
-    return res.status(400).json({ error: error.message });
+    return res.status(400).json({ message: "user Already exist" });
   }
 };
 
@@ -48,16 +47,16 @@ const loginUser = async (req, res) => {
   }
 };
 
-const homepage = async (req, res) => {
-  try {
-    const { username } = req.info;
-    res.json(`Welcome to The System ${username}`);
-  } catch (error) {
-    return res.status(400).json({ message: error.message });
-  }
-};
+// const homepage = async (req, res) => {
+//   try {
+//     const { username } = req.info;
+//     res.json(`Welcome to The System ${username}`);
+//   } catch (error) {
+//     return res.status(400).json({ message: error.message });
+//   }
+// };
 module.exports = {
   signupUser,
   loginUser,
-  homepage,
+  // homepage,
 };

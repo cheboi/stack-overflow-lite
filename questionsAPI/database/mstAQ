@@ -1,0 +1,10 @@
+CREATE PROCEDURE mostAnswerQuestion
+AS
+BEGIN
+SELECT questionsTable.title, COUNT(answerTable.question_id) as count
+FROM questionsTable
+LEFT JOIN answerTable ON questionsTable.id=answerTable.question_id
+
+GROUP BY  questionsTable.title
+ORDER by count  DESC
+END
