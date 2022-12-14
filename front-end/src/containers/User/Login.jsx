@@ -39,7 +39,7 @@ const Login = () => {
     dispatch(login({ username, password }))
       .unwrap()
       .then(() => {
-        navigate("/profile");
+        navigate("/");
         window.location.reload();
       })
       .catch(() => {

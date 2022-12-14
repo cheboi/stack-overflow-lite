@@ -1,0 +1,19 @@
+CREATE OR ALTER PROCEDURE uspInsertOrUpdateVotes(
+@id varchar(50),
+@answer_id varchar(50),
+@votes INT =1
+)
+As
+Begin
+SET NOCOUNT ON;
+DECLARE @exists BIT
+   Select @exists= count(answer_id) from dbo.votesTable where answer_id = @answer_id
+if @exists =0
+ BEGIN
+  insert dbo.votesTable(id,answer_id, votes) Values ( @id,@answer_id, 1)
+ End
+Else  
+  BEGIN
+    UPDATE dbo.votesTable set  votes = @votes where answer_id = @answer_id
+   END
+End

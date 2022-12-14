@@ -10,6 +10,8 @@ import mentionsInputStyle from "../../styles/mentionsInputStyles.js";
 import mentionStyle from "../../styles/mentionStyles.js";
 import styles from "./comment.module.css";
 
+import { selectAllAnswers, getAnswerStatus, getErrorStatus, getAnswers } from '../../features/answerSlice'
+
 import { getQuestions, selectAllQuestions } from "../../features/questionSlice";
 
 import classes from "../HomePage/home.module.css";
@@ -34,6 +36,9 @@ const customStyles = {
 const Answers = () => {
   const dispatch = useDispatch();
   const questions = useSelector(selectAllQuestions);
+  const answers = useSelector(selectAllAnswers );
+  const answerStatus = useSelector(getAnswerStatus);
+  const answerError = useSelector(getErrorStatus);
   const navigate = useNavigate();
 
   let subtitle;
@@ -47,10 +52,14 @@ const Answers = () => {
   const [emojiValue, setEmojiValue] = useState([]);
   const notMatchingRegex = /($a)/;
 
-  console.log("data is Working");
+  // console.log("data is Working");
 
   useEffect(() => {
     dispatch(getQuestions());
+  }, []);  
+  
+  useEffect(() => {
+    dispatch(getAnswers());
   }, []);
 
   useEffect(() => {

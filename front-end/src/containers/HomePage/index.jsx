@@ -20,11 +20,20 @@ const Home = () => {
   const questions = useSelector(selectAllQuestions);
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   if (questionStatus === "idle") {
+  //   dispatch(getQuestions());
+  //   }
+  // }, [questions, dispatch]);
+
+
   useEffect(() => {
-    // if (questionStatus === "idle") {
     dispatch(getQuestions());
-    // }
-  }, [questions, dispatch]);
+
+    if (questionStatus === "idle") {
+      dispatch(getQuestions());
+    }
+  },[]);
 
   console.log("List Of Questions" + questions);
   let content2;
