@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import authHeader from "../services/auth.header";
 
 const url = "http://localhost:4000/comments";
 const initialState = {
@@ -22,7 +21,7 @@ export const addComment = createAsyncThunk(
   async (data) => {
     console.log(data);
     const response = await axios
-      .post(url, data, { headers: authHeader() })
+      .post(url, data)
       .then((data) => data.json());
     return response;
   },

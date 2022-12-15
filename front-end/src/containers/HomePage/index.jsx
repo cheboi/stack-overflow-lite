@@ -9,6 +9,8 @@ import {
   getQuestionStatus,
   getErrorStatus,
 } from "../../features/questionSlice";
+//front-end\src\features\answerSlice.js
+import { getAnswers } from "../../features/answerSlice"
 
 import classes from "./home.module.css";
 
@@ -35,6 +37,20 @@ const Home = () => {
     }
   },[]);
 
+  const handleAnswers = (question_id) => {
+    dispatch(getAnswers(question_id));
+    navigate("/answers");
+  };
+
+  // const handlesearch = () => {
+  //   if (search.search_value) {
+  //     dispatch(searchQuestions(search));
+  //     navigate("/searches");
+  //   } else {
+  //     alert(" nothing to search");
+  //   }
+  // };
+
   console.log("List Of Questions" + questions);
   let content2;
 
@@ -46,10 +62,10 @@ const Home = () => {
         <article onClick={() => navigate()}>
           <div className={classes.homeContent} key={p.id}>
             <div className="product-details">
-              <Link to="/react">
+              <div  onClick={() => handleAnswers(p?.question_id)} styles={{color: "yellow"}}>
                 <h1>{p?.title}</h1>
                 <p className="description">{p?.description}</p>
-              </Link>
+              </div>
             </div>
           </div>
         </article>

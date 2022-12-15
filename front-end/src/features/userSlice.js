@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import authHeader from "../services/auth.header.js";
+// import authHeader from "../services/auth.header.js";
 const URL = "http://localhost:4000/user/profile";
 
 const initialState = {
@@ -10,7 +10,7 @@ const initialState = {
 };
 export const getUserDetails = createAsyncThunk("aswers", async () => {
   let user = [];
-  const response = await axios.post(URL,{headers:authHeader()}).then((data) => data.data);
+  const response = await axios.post(URL).then((data) => data.data);
   user = [...response];
   return user;
 });

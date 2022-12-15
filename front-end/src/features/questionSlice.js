@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import authHeader from "../services/auth.header";
 import axios from "axios";
 
 const URL = "http://localhost:4000/questions";
@@ -13,7 +12,7 @@ export const getQuestions = createAsyncThunk(
   "questions/getQuestions",
   async () => {
     const response = await axios.get(URL);
-    console.log(response.data);
+    // console.log(response.data);
     return response.data;
   }
 );
@@ -22,7 +21,7 @@ export const askQuestion = createAsyncThunk(
   "questions/askedQuestion",
   async (initialQuestion) => {
     const response = await axios
-      .post(URL, initialQuestion, { headers: authHeader() })
+      .post(URL, initialQuestion, )
       .then((data) => data.json());
     return response.data;
   }

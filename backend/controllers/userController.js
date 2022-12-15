@@ -1,62 +1,46 @@
-const bcrypt = require("bcrypt");
+require("dotenv").config();
+
 const jwt = require("jsonwebtoken");
 const { v4 } = require("uuid");
-const dotenv = require("dotenv");
-const { exec, query } = require("../DatabaseHelpers/dbhelper.js");
+const bcrypt = require("bcrypt");
 
-dotenv.config();
+const { exec } = require("../DatabaseHelpers/dbhelper");
 
 const signupUser = async (req, res) => {
   try {
-    const { firstname, lastname, username, email, password } = req.body;
+    const { username, email, password } = req.body;
+    // const exists = await exec("getUser", { email });
+    // console.log(exists);
+
+    const id = v4();
     const hashedpassword = await bcrypt.hash(password, 8);
-    await exec("addUser", {
-      firstname,
-      lastname,
-      email,
-      username,
-      password: hashedpassword,
-    });
-    return res.status(201).json({ message: "User Added Successfully" });
+    const data = { id, username, email, password: hashedpassword };
+    await exec("addUser", data);
+    return res.status(201).json({ message: "sucess registed user" });
   } catch (error) {
-    return res.status(400).json({ message: "user Already exist" });
+    return res.status(400).json({ error: error.message });
   }
 };
 
 const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await (await exec("getUser", { email })).recordset[0];
-    if (user) {
-      // check password
-      const checkPassword = await bcrypt.compare(password, user.password);
-      if (checkPassword) {
-        const { password, id, ...payload } = user;
-        const token = jwt.sign(payload, process.env.SECRET, {
-          expiresIn: "120890890s",
-        });
-        return res.status(200).json({ message: "Logged in !!", token });
-      } else {
-        return res.status(400).json({ message: "User Not Found" });
-      }
-    } else {
-      return res.status(400).json({ message: "User Not Found" });
-    }
-  } catch (error) {
-    return res.status(400).json({ message: error.message });
+  const { email, password } = req.body;
+  const user = await exec("getUser", { email });
+
+  const correct = await bcrypt.compare(password, user[0].password);
+  if (correct) {
+    let { id, email, username } = user[0];
+
+    let payload = { id, email, username };
+    let token = await jwt.sign(payload, process.env.SECRET, {
+      expiresIn: "100min",
+    });
+    res.status(200).json({ token });
+  } else {
+    res.status(400).json({ error: "The password is not correct" });
   }
 };
 
-// const homepage = async (req, res) => {
-//   try {
-//     const { username } = req.info;
-//     res.json(`Welcome to The System ${username}`);
-//   } catch (error) {
-//     return res.status(400).json({ message: error.message });
-//   }
-// };
 module.exports = {
   signupUser,
   loginUser,
-  // homepage,
 };

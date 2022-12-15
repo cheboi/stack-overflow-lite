@@ -1,5 +1,5 @@
-CREATE PROCEDURE getUser (@id VARCHAR(50))
+CREATE OR ALTER  PROC getUser (@email VARCHAR(200))
 AS
 BEGIN
-SELECT * FROM UsersTable WHERE id = @id
+SELECT * FROM UserTable WHERE email = @email
 END
