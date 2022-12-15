@@ -1,5 +1,5 @@
-CREATE OR ALTER PROCEDURE getQuestions
+CREATE OR ALTER PROCEDURE getAnswers
 AS
 BEGIN
-SELECT * FROM dbo.QuestionsTable
+SELECT * FROM dbo.answerTable
 END

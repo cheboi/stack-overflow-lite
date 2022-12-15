@@ -1,7 +1,7 @@
-CREATE PROCEDURE insertUpdateComment(
+CREATE OR ALTER PROCEDURE insertUpdateComment(
 	@id VARCHAR(100),
 	@comment VARCHAR(MAX),
-    @user_email VARCHAR(50),
+    @user_id VARCHAR(50),
     @answer_id VARCHAR(50),
 	@date_commented DATETIME
     )
@@ -18,9 +18,9 @@ BEGIN
     END
 ELSE BEGIN
         INSERT INTO commentsTable
-            (id,comment,user_email,answer_id,date_commented )
+            (id,comment,user_id,answer_id,date_commented )
         VALUES
-            (@id,@comment,@user_email,@answer_id,@date_commented)
+            (@id,@comment,@user_id,@answer_id,@date_commented)
     END
 
 END

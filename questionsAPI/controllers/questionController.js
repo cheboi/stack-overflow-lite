@@ -1,4 +1,5 @@
 const mssql = require("mssql");
+const moment = require("moment");
 const { v4 } = require("uuid");
 const sqlConfig = require("../Config/index");
 
@@ -17,30 +18,21 @@ const getQuestions = async (req, res) => {
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
-
-  // try {
-  //   const questions = await exec("getQuestions");
-  //   if (questions.length) {
-  //     return res.status(200).json(questions);
-  //   } else {
-  //     res.status(404).json({ message: "No questions for now" });
-  //   }
-  // } catch (error) {
-  //   return res.status(404).json({ error: error.message });
-  // }
 };
 
 const askQuestion = async (req, res) => {
-  try {
+  try {    
+    const user_id =  req.headers["user_id"];
     const id = v4();
-    const { title, description, user_email, date_asked } = req.body;
+    const date_asked = moment().format("YYYY-MM-DD HH:mm:ss");
+    const { title, description } = req.body;
     const pool = await mssql.connect(sqlConfig);
     await pool
       .request()
       .input("id", mssql.VarChar, id)
       .input("title", mssql.VarChar, title)
       .input("description", mssql.VarChar, description)
-      .input("user_email", mssql.VarChar, user_email)
+      .input("user_id", mssql.VarChar, user_id)
       .input("date_asked", mssql.DateTime, date_asked)
       .execute("askQuestion");
     res.status(201).json({ message: "question Asked" });
@@ -51,6 +43,7 @@ const askQuestion = async (req, res) => {
 
 const updateQuestion = async (req, res) => {
   try {
+
     const { id } = req.params;
     const { title, description } = req.body;
 
@@ -156,32 +149,37 @@ const getMostAnsweredQuestion = async (req, res) => {
   // }
 
   try {
-    const { range } = req.query; 
+    const { range } = req.query;
 
-    const questions = await (await execute('uspMostAnsweredQuestions', { range })).recordset;
+    const questions = await (
+      await execute("uspMostAnsweredQuestions", { range })
+    ).recordset;
 
-    
     if (questions.length > 0) {
-      let qnFilter = questions.map(qn => { return qn.id });
+      let qnFilter = questions.map((qn) => {
+        return qn.id;
+      });
 
-      const allQuestions = await (await execute('getQuestions')).recordset;
+      const allQuestions = await (await execute("getQuestions")).recordset;
 
-      const filteredData = allQuestions.filter(question => qnFilter.includes(question.id));
+      const filteredData = allQuestions.filter((question) =>
+        qnFilter.includes(question.id)
+      );
 
       return res.status(200).json({
-        msg: 'Questions fetched successfully',
-        data: filteredData
-      })
+        msg: "Questions fetched successfully",
+        data: filteredData,
+      });
     } else {
       return res.status(404).json({
-        msg: 'Your have more than those questions',
-        data: []
-      })
+        msg: "Your have more than those questions",
+        data: [],
+      });
     }
   } catch (error) {
     return res.status(500).json({
-      msg: error
-    })
+      msg: error,
+    });
   }
 };
 
