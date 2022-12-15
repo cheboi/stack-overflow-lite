@@ -1,6 +1,6 @@
 CREATE TABLE votesTable (
-  id VARCHAR(50) PRIMARY KEY,
+  id VARCHAR(50) PRIMARY KEY NOT NULL,
   answer_id VARCHAR(50) FOREIGN KEY REFERENCES answerTable(id),
-  user_email VARCHAR(50) FOREIGN KEY REFERENCES UsersTable(email),
+  user_id VARCHAR(50) FOREIGN KEY REFERENCES UsersTable(id),
   votes INT DEFAULT 0,
 );

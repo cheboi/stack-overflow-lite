@@ -3,19 +3,18 @@ const mssql = require("mssql");
 const uuid = require("uuid");
 const moment = require("moment");
 require("dotenv").config();
-// const { exec, query } = require("../DatabaseHelpers/dbhelper");
 
 const addAnswer = async (req, res) => {
   try {
     // const user_email = req.headers["user_id"];
     const date_answered = moment().format("YYYY-MM-DD HH:mm:ss");
     const id = uuid.v4();
-    const { user_email, question_id, answer } = req.body;
+    const { user_id, question_id, answer } = req.body;
     const pool = await mssql.connect(sqlConfig);
     await pool
       .request()
       .input("id", mssql.VarChar, id)
-      .input("user_email", mssql.VarChar, user_email)
+      .input("user_id", mssql.VarChar, user_id)
       .input("question_id", mssql.VarChar, question_id)
       .input("answer", mssql.VarChar, answer)
       .input("date_answered", mssql.DateTime, date_answered)
@@ -44,14 +43,14 @@ const getAnswer = async (req, res) => {
 
 const editAnswer = async (req, res) => {
   try {
-    const user_email = req.headers["user_email"];
+    const user_id = req.headers["user_id"];
     const { id } = req.params;
     const { answer, question_id, upvote, downvote, date_answered } = req.body;
     const pool = await mssql.connect(sqlConfig);
     await pool
       .request()
       .input("id", mssql.VarChar(50), id)
-      .input("user_email", user_email)
+      .input("user_id", user_id)
       .input("question_id", question_id)
       .input("answer", answer)
       .input("upvote", upvote)
@@ -86,7 +85,7 @@ const getAnswers= async (req, res) => {
     if (qn.length) {
       return res.status(200).json(qn);
     } else {
-      res.status(404).json({ message: "No Answerss for now" });
+      res.status(404).json({ message: "No Answers for now" });
     }
   } catch (error) {
     res.status(404).json({ error: error.message });

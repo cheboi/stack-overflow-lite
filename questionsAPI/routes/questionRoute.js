@@ -13,12 +13,12 @@ const {
 const router = Router();
 
 router.get("/", getQuestions);
-router.post("", verifyToken, askQuestion);
-router.put("/:id", verifyToken,updateQuestion);
+router.post("", askQuestion);
+router.put("/:id",updateQuestion);
 router.get("/:id", getQuestionById);
-router.delete("/:id",verifyToken, deleteQuestion);
+router.delete("/:id", deleteQuestion);
 router.get("/question/search/", searchQuesstion);
-router.get("/question/mostanseredquestion/",verifyToken, getMostAnsweredQuestion);
-router.get("/userquestions/:id", verifyToken, getUserQuestions);
+router.get("/question/mostanseredquestion/", getMostAnsweredQuestion);
+router.get("/userquestions/:id", getUserQuestions);
 
 module.exports = { router };

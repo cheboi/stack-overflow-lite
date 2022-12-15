@@ -1,6 +1,6 @@
 CREATE OR ALTER PROCEDURE uspInsertUpdateAnswer(
 	@id VARCHAR(50),
-    @user_email VARCHAR(50),
+    @user_id VARCHAR(50),
     @question_id VARCHAR(50),
     @answer VARCHAR(MAX),
 	@date_answered DATETIME
@@ -18,9 +18,9 @@ BEGIN
     END
 ELSE BEGIN
         INSERT INTO answerTable
-            (id, user_email, question_id, answer, date_answered )
+            (id, user_id, question_id, answer, date_answered )
         VALUES
-            (@id, @user_email, @question_id, @answer, @date_answered)
+            (@id, @user_id, @question_id, @answer, @date_answered)
     END
 
 END

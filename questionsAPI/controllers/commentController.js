@@ -42,8 +42,6 @@ const getComment = async (req, res) => {
 };
 const updateComment = async (req, res) => {
   try {
-    // const user_email = req.headers["user_email"];
-
     const { answer_id } = req.params;
     const { id } = req.params;
     const {user_email,  comment } = req.body;
