@@ -15,10 +15,10 @@ const Login = () => {
   });
 
   useEffect(() => {
-    if (auth._id) {
-      navigate("/cart");
+    if (auth.id) {
+      navigate("/");
     }
-  }, [auth._id, navigate]);
+  }, [auth.id, navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

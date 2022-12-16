@@ -4,6 +4,7 @@ import axios from "axios";
 const URL = "http://localhost:4000/questions";
 const initialState = {
   questions: [],
+  search:[],
   status: "idle", //'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
 };
@@ -25,6 +26,16 @@ export const askQuestion = createAsyncThunk(
       .then((data) => data.json());
     return response.data;
   }
+);
+
+export const searchQuestions = createAsyncThunk(
+  "search/searchquestions",
+  async (data) => {
+    let Searches = [];
+    const response = await axios.post(`${URL}/search`, data).then((data) =>data.data);
+    Searches = [...response];
+    return Searches;  
+  },
 );
 
 export const questionSlice = createSlice({

@@ -1,10 +1,12 @@
-require("dotenv").config();
-
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { v4 } = require("uuid");
-const bcrypt = require("bcrypt");
+const dotenv = require("dotenv");
+const { exec, query } = require("../DatabaseHelpers/dbhelper.js");
 
-const { exec } = require("../DatabaseHelpers/dbhelper");
+// const {SECRET_KEY } = process.env;
+
+dotenv.config();
 
 const signupUser = async (req, res) => {
   try {
@@ -23,20 +25,33 @@ const signupUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-  const { email, password } = req.body;
-  const user = await exec("getUser", { email });
-
-  const correct = await bcrypt.compare(password, user[0].password);
-  if (correct) {
-    let { id, email, username } = user[0];
-
-    let payload = { id, email, username };
-    let token = await jwt.sign(payload, process.env.SECRET, {
-      expiresIn: "100min",
-    });
-    res.status(200).json({ token });
-  } else {
-    res.status(400).json({ error: "The password is not correct" });
+  try {
+    const { email, password } = req.body;
+    console.log(password)
+    const user = await (await exec("getUser", { email })).recordset[0];
+    console.log(user);
+    if (user) {
+      // check password
+      const checkPassword = await bcrypt.compare('12345', user.password);
+      console.log(checkPassword);
+      if (checkPassword) {
+        const { password, id, ...payload } = user;
+        const token = jwt.sign(payload, process.env.SECRET_KEY, {
+          expiresIn: "120890890s",
+        });
+        return res.status(200).json({ message: "Logged in !!", token });
+      }
+       else {
+        return res.status(400).json({ message: "User Not Found" });
+      }
+    }
+     else{
+      return res.status(400).json({
+        message: "User Found"
+      })
+     }
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
   }
 };
 

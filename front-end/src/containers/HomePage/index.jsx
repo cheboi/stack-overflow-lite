@@ -2,32 +2,33 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 import {
   getQuestions,
+  searchQuestions,
   selectAllQuestions,
   getQuestionStatus,
   getErrorStatus,
 } from "../../features/questionSlice";
 //front-end\src\features\answerSlice.js
-import { getAnswers } from "../../features/answerSlice"
+import { getAnswers } from "../../features/answerSlice";
 
 import classes from "./home.module.css";
 
 const Home = () => {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState({ search_value: "" });
   const questionStatus = useSelector(getQuestionStatus);
   const questionError = useSelector(getErrorStatus);
   const dispatch = useDispatch();
   const questions = useSelector(selectAllQuestions);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (questionStatus === "idle") {
-  //   dispatch(getQuestions());
-  //   }
-  // }, [questions, dispatch]);
-
+  useEffect(() => {
+    if (questionStatus === "idle") {
+      dispatch(getQuestions());
+    }
+  }, [questions, dispatch]);
 
   useEffect(() => {
     dispatch(getQuestions());
@@ -35,21 +36,28 @@ const Home = () => {
     if (questionStatus === "idle") {
       dispatch(getQuestions());
     }
-  },[]);
+  }, []);
 
   const handleAnswers = (question_id) => {
     dispatch(getAnswers(question_id));
     navigate("/answers");
   };
 
-  // const handlesearch = () => {
-  //   if (search.search_value) {
-  //     dispatch(searchQuestions(search));
-  //     navigate("/searches");
-  //   } else {
-  //     alert(" nothing to search");
-  //   }
-  // };
+  const handlesearch = () => {
+    if (query.search_value) {
+      dispatch(searchQuestions(query));
+      navigate("/search");
+    } else {
+      alert(" no questions such question");
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setQuery((p) => ({
+      ...p,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   console.log("List Of Questions" + questions);
   let content2;
@@ -62,9 +70,13 @@ const Home = () => {
         <article onClick={() => navigate()}>
           <div className={classes.homeContent} key={p.id}>
             <div className="product-details">
-              <div  onClick={() => handleAnswers(p?.question_id)} styles={{color: "yellow"}}>
+              <div
+                onClick={() => handleAnswers(p?.question_id)}
+                styles={{ color: "yellow" }}
+              >
                 <h1>{p?.title}</h1>
                 <p className="description">{p?.description}</p>
+                <div className="time"> <span>{moment(p?.created).fromNow()}</span></div>
               </div>
             </div>
           </div>
@@ -79,10 +91,16 @@ const Home = () => {
     <section className={classes.homeContainer}>
       <div className={classes.search}>
         <input
+          type="text"
           className={classes.searchBar}
           placeholder="Search for questions"
-          onChange={(event) => setQuery(event.target.value)}
+          name="search_value"
+          value={query.search_value}
+          onChange={handleInputChange}
         />
+        <button onClick={handlesearch}>
+          <i class="fa fa-search" aria-hidden="true"></i>
+        </button>
       </div>
       <div className={classes.homeContent}>{content2}</div>
     </section>

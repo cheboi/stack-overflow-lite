@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 import {
   selectAllAnswers,
   getAnswerStatus,
@@ -8,56 +9,67 @@ import {
 } from "../../features/answerSlice";
 
 const Answers = () => {
-  const dispatch = useDispatch()
-  
+  const dispatch = useDispatch();
+
   // Get the answers from the store
-  const answer = useSelector(selectAllAnswers)
+  const answer = useSelector(selectAllAnswers);
 
   // Pull the post properties
-  const { answers, status, error } = answer
+  const { answers, status, error } = answer;
 
   useEffect(() => {
     // eslint-disable-next-line no-unused-vars
-    let isMounted = true
+    let isMounted = true;
 
     // If status is 'idle', then fetch the posts data from the API
-    if (status === 'idle') {
-      dispatch(getAnswers())
+    if (status === "idle") {
+      dispatch(getAnswers());
     }
 
     // Cleanup function
     return () => {
-      isMounted = false
-    }
+      isMounted = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, dispatch])
+  }, [status, dispatch]);
 
-  console.log("All Answers" + answer)
+  console.log("All Answers" + answer);
 
-  let bodyContent
+  // const handleupdVote = (vote) => {
+  //   let newVote={...vote,upvote:1, downvote:0}
+  //   dispatch(addVote(newVote));
+  // };
+  // const handledownvote = (vote) => {
+  //   let newVote={...vote,upvote:0, downvote:1}
+  //   dispatch(addVote(newVote));
+  // };
+  // const getComentHandler = () => {
+  //   setShow((prev) => !prev);
+  // };
 
-  if (status === 'loading') {
-    bodyContent = <div className="loader"></div>
-  } else if (status === 'successful') {
+  let bodyContent;
+
+  if (status === "loading") {
+    bodyContent = <div className="loader"></div>;
+  } else if (status === "successful") {
     // Sort the posts by id in descending order
-    const sortedAnswers = answers.slice().sort((a, b) => b.id - a.id)
+    const sortedAnswers = answers.slice().sort((a, b) => b.id - a.id);
 
     // Map through the sorted posts and display them
     bodyContent = sortedAnswers.map((answer) => (
       <div key={answer.id}>
         <p>{answer.answer}</p>
       </div>
-    ))
+    ));
   } else {
     // Display the error message
-    bodyContent = <div>{error}</div>
+    bodyContent = <div>{error}</div>;
   }
 
-  return <div>{bodyContent}</div>
-}
+  return <div>{bodyContent}</div>;
+};
 
-export default Answers
-
+export default Answers;
 
 // import React, { useState, useEffect } from "react";
 // import { Link, useNavigate } from "react-router-dom";
@@ -70,8 +82,6 @@ export default Answers
 // import mentionsInputStyle from "../../styles/mentionsInputStyles.js";
 // import mentionStyle from "../../styles/mentionStyles.js";
 // import styles from "./comment.module.css";
-
-
 
 // import { getQuestions, selectAllQuestions } from "../../features/questionSlice";
 
@@ -342,6 +352,3 @@ export default Answers
 // };
 
 // export default Answers;
-
-
-
