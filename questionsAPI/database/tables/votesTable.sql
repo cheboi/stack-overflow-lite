@@ -1,6 +1,5 @@
-CREATE TABLE votesTable (
-  id VARCHAR(50) PRIMARY KEY NOT NULL,
-  answer_id VARCHAR(50) FOREIGN KEY REFERENCES answerTable(id),
-  user_id VARCHAR(50) FOREIGN KEY REFERENCES UsersTable(id),
-  votes INT DEFAULT 0,
-);
+CREATE Table downUpVote(
+    user_id VARCHAR(50) FOREIGN KEY REFERENCES UsersTable(id) NOT NULL,
+    answer_id VARCHAR(50)  FOREIGN KEY REFERENCES answerTable(id) NOT NULL,
+    Vote BIT DEFAULT 0,
+)

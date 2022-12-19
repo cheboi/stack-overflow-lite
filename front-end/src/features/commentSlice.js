@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import setHeaders from "./api/api"
 
 const url = "http://localhost:4000/comments";
 const initialState = {
@@ -40,18 +41,18 @@ export const commentSlice = createSlice({
       })
       .addCase(getComments.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.questions = action.payload;
+        state.comments = action.payload;
       })
       .addCase(getComments.rejected, (state, action) => {
         state.status = "failed";
-        state.questions = action.payload.message.error;
+        state.comments = action.payload.message.error;
       });
   },
 });
 
-export const selectAllCommentss = (state) => state.comments?.questions;
-export const getCommentStatus = (state) => state.comments?.status;
-export const getErrorStatus = (state) => state.comments?.error;
+export const selectAllComments = (state) => state.comment?.comments;
+export const getCommentStatus = (state) => state.comment?.status;
+export const getErrorStatus = (state) => state.comment?.error;
 
 const commentReducer = commentSlice.reducer;
 export default commentReducer;

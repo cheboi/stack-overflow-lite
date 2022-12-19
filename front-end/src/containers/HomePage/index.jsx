@@ -67,7 +67,7 @@ const Home = () => {
   } else if (questionStatus === "succeeded") {
     content2 = questions.map((p) => {
       return (
-        <article onClick={() => navigate()}>
+        <article>
           <div className={classes.homeContent} key={p.id}>
             <div className="product-details">
               <div

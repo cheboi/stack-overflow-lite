@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { setHeaders } from "./api/api";
 const URL = "http://localhost:4000/answers";
 
 const initialState = {
@@ -10,10 +11,16 @@ const initialState = {
 export const getAnswers = createAsyncThunk(
   "answers/getAnswers",
   async (thunkAPI) => {
+    let Answers = [];
     try {
-      const res = await axios.get(URL);
-      console.log(res.data);
-      return res.data;
+      const response = await axios
+        .get(
+          `${URL}/question/${thunkAPI}`,
+          { headers: setHeaders() }
+        )
+        .then((data) => data.data);
+      Answers = [...response];
+      return Answers;
     } catch (err) {
       return thunkAPI.rejectWithValue({ error: err.message });
     }
@@ -21,8 +28,7 @@ export const getAnswers = createAsyncThunk(
 );
 
 export const addAnswer = createAsyncThunk(
-  "answer/addAnswer",
-
+  "answers/addAnswer",
   async (initialAnswer, thunkAPI) => {
     try {
       const res = await axios.post(URL, initialAnswer);
@@ -34,7 +40,7 @@ export const addAnswer = createAsyncThunk(
 );
 
 export const updateAnswer = createAsyncThunk(
-  "answer/updateAnswer",
+  "answers/updateAnswer",
   async (data) => {
     // console.log(data);
     const response = await axios
@@ -44,6 +50,16 @@ export const updateAnswer = createAsyncThunk(
   },
   getAnswers()
 );
+
+export const VoteAnswer = createAsyncThunk("votes/voteAnswer", async (data) => {
+  const response = await axios
+    .post(`${URL}/vote/${data.answer_id}`, data
+    //  { headers: authHeader() }
+     )
+    .then((data) => data.data);
+  return response;
+});
+
 export const answerSlice = createSlice({
   name: "answer",
   initialState,
@@ -64,9 +80,9 @@ export const answerSlice = createSlice({
   },
 });
 
-export const selectAllAnswers = (state) => state.answers?.questions;
-export const getAnswerStatus = (state) => state.answers?.status;
-export const getErrorStatus = (state) => state.answers?.error;
+export const selectAllAnswers = (state) => state.answer?.answers;
+export const getAnswerStatus = (state) => state.answer?.status;
+export const getErrorStatus = (state) => state.answer?.error;
 
 const answerReducer = answerSlice.reducer;
 export default answerReducer;

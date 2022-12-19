@@ -4,7 +4,7 @@ import axios from "axios";
 const URL = "http://localhost:4000/questions";
 const initialState = {
   questions: [],
-  search:[],
+  search: [],
   status: "idle", //'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
 };
@@ -22,7 +22,7 @@ export const askQuestion = createAsyncThunk(
   "questions/askedQuestion",
   async (initialQuestion) => {
     const response = await axios
-      .post(URL, initialQuestion, )
+      .post(URL, initialQuestion)
       .then((data) => data.json());
     return response.data;
   }
@@ -32,10 +32,39 @@ export const searchQuestions = createAsyncThunk(
   "search/searchquestions",
   async (data) => {
     let Searches = [];
-    const response = await axios.post(`${URL}/search`, data).then((data) =>data.data);
+    const response = await axios
+      .post(`${URL}/search`, data)
+      .then((data) => data.data);
     Searches = [...response];
-    return Searches;  
-  },
+    return Searches;
+  }
+);
+
+export const getQuestionById = createAsyncThunk(
+  "questions/getQuestionById",
+  async (id) => {
+    const res = await axios.get(`http://localhost:4000/questions/${id}`);
+    const { data } = res.data;
+    return data;
+  }
+);
+
+export const getRecentAskedQuestions = createAsyncThunk(
+  "questions/getRecentAskedQuestions",
+  async () => {
+    const response = await axios.get(`${URL}/recent`);
+    const { data } = response.data;
+    return data;
+  }
+);
+
+export const getMostAnsweredQuestions = createAsyncThunk(
+  'questions/getMostAnsweredQuestions',
+  async () => {
+    const response = await axios.get(`${URL}/question/mostanseredquestion`);
+    const { data } = response.data;
+    return data; 
+  }
 );
 
 export const questionSlice = createSlice({
@@ -68,13 +97,25 @@ export const questionSlice = createSlice({
       .addCase(getQuestions.rejected, (state, action) => {
         state.status = "failed";
         state.questions = action.payload.message.error;
-      });
+      })
+      .addCase(getRecentAskedQuestions.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.questions = action.payload
+      })
+      .addCase(getMostAnsweredQuestions.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.questions = action.payload
+      })
+      .addCase(searchQuestions.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.questions = action.payload
+      })
   },
 });
 
-// const { getQUestions } = questionSlice.actions;
 export const selectAllQuestions = (state) => state.questions?.questions;
 export const getQuestionStatus = (state) => state.questions?.status;
 export const getErrorStatus = (state) => state.questions?.error;
+
 
 export default questionSlice.reducer;

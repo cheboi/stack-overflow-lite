@@ -4,6 +4,7 @@ const { v4 } = require("uuid");
 const sqlConfig = require("../Config/index");
 
 const { exec, query } = require("../DatabaseHelpers/dbhelper.js");
+const {getDays} = require("../DatabaseHelpers/timeHelper")
 
 const getQuestions = async (req, res) => {
   try {
@@ -183,6 +184,29 @@ const getMostAnsweredQuestion = async (req, res) => {
   }
 };
 
+const getRecentQuestions = async (req, res) => {
+  try {
+    const questions = await (await execute('uspGetMostRecentQuestions')).recordset;
+
+    let data = getDays(questions);
+
+    if (questions) {
+      return res.status(200).json({
+        msg: 'Questions fetched successfully',
+        data
+      })
+    } else {
+      return res.status(404).json({
+        msg: 'Not questions were found'
+      })
+    }
+  } catch (error) {
+    return res.status(500).json({
+      msg: error
+    })
+  }
+}
+
 module.exports = {
   getQuestions,
   updateQuestion,
@@ -192,4 +216,5 @@ module.exports = {
   searchQuesstion,
   getMostAnsweredQuestion,
   getUserQuestions,
+  getRecentQuestions
 };

@@ -1,28 +1,24 @@
-CREATE OR ALTER PROCEDURE uspVotesCount(
-  @id VARCHAR(255),
-  @user_email VARCHAR(255),
-  @answer_id VARCHAR(255),
-  @totalVotes INT = 0
-)
+CREATE or AlTER PROCEDURE uspInsertUpdateVotes(
+    @user_id VARCHAR(50),
+    @answer_id VARCHAR(50),
+    @Vote BIT
+    )
 AS
 BEGIN
-
-  DECLARE @exist BIT
-
-  SELECT @exist = count(id) from votesCountTable WHERE user_email = @user_email AND answer_id = @answer_id and totalVotes=@totalVotes
-  
-  if @exist > 0
+    IF EXISTS(
+    SELECT*
+    FROM downUpVote
+    WHERE answer_id = @answer_id AND user_id = @user_id) 
     BEGIN
-      DELETE FROM votesCountTable WHERE user_email = @user_email AND answer_id = @answer_id
+        UPDATE downUpVote
+         SET Vote = @Vote
+         WHERE answer_id = @answer_id AND user_id = @user_id;
     END
-  ELSE
-    BEGIN
-      IF EXISTS (SELECT * FROM votesCountTable WHERE user_email = @user_email AND answer_id = @answer_id)
-        UPDATE votesCountTable SET
-          totalVotes = @totalVotes
-        WHERE user_email = @user_email AND answer_id = @answer_id
-      ELSE
-        INSERT INTO votesCountTable(id, user_email, answer_id, totalVotes)
-        VALUES (@id, @user_email, @answer_id, @totalVotes)
-      END;
+ELSE BEGIN
+        INSERT INTO downUpVote
+            (user_id, answer_id, Vote )
+        VALUES
+            (@user_id, @answer_id, @Vote)
+    END
+
 END

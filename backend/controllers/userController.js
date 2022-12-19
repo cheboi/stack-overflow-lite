@@ -29,10 +29,9 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
     console.log(password)
     const user = await (await exec("getUser", { email })).recordset[0];
-    console.log(user);
     if (user) {
       // check password
-      const checkPassword = await bcrypt.compare('12345', user.password);
+      const checkPassword = await bcrypt.compare(password, user.password);
       console.log(checkPassword);
       if (checkPassword) {
         const { password, id, ...payload } = user;
@@ -47,7 +46,7 @@ const loginUser = async (req, res) => {
     }
      else{
       return res.status(400).json({
-        message: "User Found"
+        message: "User not found"
       })
      }
   } catch (error) {

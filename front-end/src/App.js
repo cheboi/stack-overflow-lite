@@ -1,4 +1,3 @@
-import "./App.css";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
@@ -21,7 +20,6 @@ function App() {
   // }, [dispatch]);
 
   return (
-    <div>
       <BrowserRouter>
         <Header />
         <Routes>
@@ -36,7 +34,6 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
-    </div>
   );
 }
 

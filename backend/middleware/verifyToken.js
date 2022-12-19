@@ -1,22 +1,20 @@
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
-const { SECRET_KEY } = process.env
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
-exports.verifyToken = async (req, res, next) => {
-    try {
-      const tokenHeader = req.headers.authorization;
-      if (!tokenHeader) {
-        return res.status(401).json({
-          msg: 'You are not authorized'
-        })
-      }
-      const token = tokenHeader.split(' ')[1];
-      const decodedData = jwt.verify(token, SECRET_KEY);
-      req.email = decodedData;
-    } catch (error) {
-      return res.status(500).json({
-        msg: error
-      })
-    }
-    next();
+const verifyToken = (req, res, next) => {
+  const token = req.headers["x-access-token"];
+  if (!token) {
+    return res.status(403).send("A token is required for authentication");
   }
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET);
+    req.email = decoded.email;
+  } catch (err) {
+    return res.status(401).send("Invalid Token");
+  }
+  return next();
+};
+
+module.exports = {
+  verifyToken,
+}
