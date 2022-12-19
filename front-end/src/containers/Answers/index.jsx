@@ -21,6 +21,7 @@ import mentionsInputStyle from "../../styles/mentionsInputStyles.js";
 import mentionStyle from "../../styles/mentionStyles.js";
 import styles from "./comment.module.css";
 import classes from "../HomePage/home.module.css";
+import "../../style.css";
 
 const INITIAL_VALUES = {};
 const answerSchema = Yup.object().shape({
@@ -56,6 +57,8 @@ const Answers = () => {
   const [comments, setComments] = useState([]);
   const [emojiValue, setEmojiValue] = useState([]);
   const notMatchingRegex = /($a)/;
+
+  const [isActive, setIsActive] = useState(false);
 
   function openModal() {
     setIsOpen(true);
@@ -173,97 +176,54 @@ const Answers = () => {
             )}
           </Formik>
         </Modal>
-        <div style={{ margin: "20px" }}>
-          {answer[0]?.id === null ? (
-            <p>No one has Answered the question</p>
-          ) : (
-            answer?.map((item, index) => (
-              <div className={classes.homeCard}>
-                <div className={classes.votesSection}>
-                  <GoTriangleUp
-                    onClick={() => {
-                      handleUpVote(item);
-                    }}
-                  />
-                  <br />
-                  {item.count}
-                  <br />
-                  <GoTriangleDown
-                    onClick={() => {
-                      handleDownVote(item);
-                    }}
-                  />
-                  {item?.prefered === true ? <FcAcceptDatabase /> : null}
-                </div>
-                <div className={classes.questionSections}>
-                  <p style={{ width: "60vw" }}>
-                    {item.answer}
-                  </p>
-                </div>
-                <ul className={classes.anSwerDetail}>
-                  <li><span>{moment(item.answer_created).fromNow()}</span></li>
-                  <li></li>
-                </ul>
-              </div>
-            ))
-          )}
-
-          {/* <div className={classes.CommentContainer}>
-            <button onClick={() => setShow((prev) => !prev)}>Comments</button>
-            {show && (
-              <div className={styles.form}>
-                <section className={styles.formCard}>
-                  <MentionsInput
-                    placeholder="Add Comment. Use '@' for mention"
-                    value={formState.comment}
-                    onChange={(e) =>
-                      setFormState({ ...formState, comment: e.target.value })
-                    }
-                    style={mentionsInputStyle}
-                  >
-                    <Mention style={mentionStyle} data={users} />
-                  </MentionsInput>
-                  <button className={styles.mentionBtn} onClick={submit}>
-                    Submit
-                  </button>
-                </section>
-                {comments.length === 0 ? null : (
-                  <section>
-                    {comments.map((comment, i) => (
-                      <div className={styles.commentCard} key={i}>
-                        <p className={styles.username}>
-                          {comment.username} on {date}
-                        </p>
-                        <h2>{comment.comment}</h2>
-                      </div>
-                    ))}
-                  </section>
-                )}
-              </div>
-            )}
-          </div> */}
-        </div>
-        <div>
-          <div className={classes.homeCard}>
-            <div className={classes.votesSection}>
-              <GoTriangleUp />
-              <br />
-              4
-              <br />
-              <GoTriangleDown />
+        <div className="accordion">
+        {/* {accordionData.map(({ title, content }) => (
+          <Accordion title={title} content={content} />
+        ))} */}
+          <div className="accordion-item">
+            <div
+              className="accordion-title"
+              onClick={() => setIsActive(!isActive)}
+            >
+              {answer[0]?.id === null ? (
+                <p>
+                  No one has Answered the question! do you know the answer or
+                  some who knows the answer?
+                </p>
+              ) : (
+                answer?.map((item, index) => (
+                  <div className={classes.homeCard}>
+                    <div className={classes.votesSection}>
+                      <GoTriangleUp
+                        onClick={() => {
+                          handleUpVote(item);
+                        }}
+                      />
+                      <br />
+                      {item.count}
+                      <br />
+                      <GoTriangleDown
+                        onClick={() => {
+                          handleDownVote(item);
+                        }}
+                      />
+                      {item?.prefered === true ? <FcAcceptDatabase /> : null}
+                    </div>
+                    <div className={classes.questionSections}>
+                      <p style={{ width: "60vw" }}>{item.answer}</p>
+                    </div>
+                    <ul className={classes.anSwerDetail}>
+                      <li>
+                        <span>{moment(item.date_answered).fromNow()}</span>
+                      </li>
+                      <li></li>
+                    </ul>
+                  </div>
+                ))
+              )}
+              <div>{isActive ? "-" : "+"}</div>
+              {isActive && <div className="accordion-content">Comments</div>}
             </div>
-            <div className={classes.questionSections}>
-              <p style={{ width: "60vw" }}>Questions will be displayed Here</p>
-            </div>
-            <ul className={classes.anSwerDetail}>
-              <li>
-                <Link style={{ textDecoration: "none" }}>@Barkute</Link>
-              </li>
-              <li>02/11/2022</li>
-              <li>
-                <Link></Link>
-              </li>
-            </ul>
           </div>
         </div>
       </div>
@@ -272,101 +232,3 @@ const Answers = () => {
 };
 
 export default Answers;
-
-// // Modal.setAppElement("#yourAppElement");
-
-// const Answers = () => {
-//   const dispatch = useDispatch();
-//   const questions = useSelector(selectAllQuestions);
-//   const answers = useSelector(selectAllAnswers);
-//   const answerStatus = useSelector(getAnswerStatus);
-//   const answerError = useSelector(getErrorStatus);
-
-//   console.log("List Of Answers" + answers);
-
-//   useEffect(() => {
-//     dispatch(getQuestions());
-//   }, []);
-
-//   useEffect(() => {
-//     let isMounted = true;
-
-//     if (answerStatus === "idle") {
-//       dispatch(getAnswers());
-//     }
-
-//     return () => {
-//       isMounted = false;
-//     };
-//   }, [answerStatus, dispatch]);
-
-//   useEffect(() => {
-//     fetch(
-//       "https://gist.githubusercontent.com/oliveratgithub/0bf11a9aff0d6da7b46f1490f86a71eb/raw/d8e4b78cfe66862cf3809443c1dba017f37b61db/emojis.json"
-//     )
-//       .then((data) => {
-//         return data.json();
-//       })
-//       .then((jsonData) => {
-//         setEmojiValue(jsonData.emojis);
-//       });
-//   }, []);
-
-//   const queryEmojis = (query, callback) => {
-//     if (query.length === 0) return;
-//     const filterValue = emojiValue
-//       .filter((emoji) => {
-//         return emoji.name.indexOf(query.toLowerCase()) > -1;
-//       })
-//       .slice(0, 10);
-//     return filterValue.map(({ emoji }) => ({ id: emoji }));
-//   };
-//   const users = [
-//     {
-//       id: "isaac",
-//       display: "Isaac Emanuel",
-//     },
-//     {
-//       id: "Cheboi",
-//       display: "moses@sumbey.com",
-//     },
-//     {
-//       id: "emma",
-//       display: "emmanuel@nobody.com",
-//     },
-//   ];
-
-//   const submit = () => {
-//     if (
-//       // formState.username === "" ||
-//       formState.comment === ""
-//     ) {
-//       alert("Please fill in all fields");
-//       return;
-//     }
-
-//     setComments((comments) => [
-//       ...comments,
-//       {
-//         username: formState.username,
-//         comment: formState.comment,
-//       },
-//     ]);
-//     setFormState({
-//       username: "",
-//       comment: "",
-//     });
-//   };
-
-//   const current = new Date();
-//   const date = `${current.getDate()}/${
-//     current.getMonth() + 1
-//   }/${current.getFullYear()}`;
-
-//   // console.log(questions);
-//   return (
-//
-//   );
-// };
-
-// export default Answers;

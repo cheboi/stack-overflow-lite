@@ -1,67 +1,56 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../../features/authSlice";
-import { useNavigate } from "react-router-dom";
-import { StyledForm } from "./StyledForm";
+import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { userLogin } from '../../features/authSlice'
+import { useEffect } from 'react'
+import Error from '../../components/error'
+import Spinner from '../../components/spinner'
 
 const Login = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth);
-  console.log("Login successfully");
+  const { loading, userInfo, error } = useSelector((state) => state.auth)
+  const dispatch = useDispatch()
 
-  const [user, setUser] = useState({
-    email: "",
-    password: "",
-  });
+  const { register, handleSubmit } = useForm()
 
-  let token = localStorage.getItem("token");
+  const navigate = useNavigate()
 
+  // redirect authenticated user to profile screen
   useEffect(() => {
-    if (auth) {
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
+    if (userInfo) {
+      navigate('/user-profile')
     }
-    if (token) {
-      navigate("/");
-    }
-  }, [auth, token]);
+  }, [navigate, userInfo])
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUser((user) => ({
-      ...user,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = () => {
-    dispatch(loginUser(user));
-    setUser({
-      email: "",
-      password: "",
-    });
-  };
+  const submitForm = (data) => {
+    dispatch(userLogin(data))
+  }
 
   return (
-    <>
-      <div>
-        <h2>Login</h2>
-        <input type="email" placeholder="email" onChange={handleChange} />
-        <input type="password" placeholder="password" onChange={handleChange} />
-        <button onClick={handleSubmit}>
-          {auth.loginStatus === "pending" ? "Submitting..." : "Login"}
-        </button>
-        {auth.loginStatus === "rejected" ? <p>{auth.loginError}</p> : null}
-
-        <div className="sign-up">
-          don't have an account?
-          <span onClick={() => navigate("/signup")}>Register Now</span>
-        </div>
+    <form onSubmit={handleSubmit(submitForm)} style={{paddingTop: '80px'}}>
+      {error && <Error>{error}</Error>}
+      <div className='form-group'>
+        <label htmlFor='email'>Email</label>
+        <input
+          type='email'
+          className='form-input'
+          {...register('email')}
+          required
+        />
       </div>
-    </>
-  );
-};
+      <div className='form-group'>
+        <label htmlFor='password'>Password</label>
+        <input
+          type='password'
+          className='form-input'
+          {...register('password')}
+          required
+        />
+      </div>
+      <button type='submit' className='button' disabled={loading}>
+        {loading ? <Spinner /> : 'Login'}
+      </button>
+    </form>
+  )
+}
 
-export default Login;
+export default Login

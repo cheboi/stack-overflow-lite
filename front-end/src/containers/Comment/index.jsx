@@ -16,7 +16,7 @@ export default function Comment({ answer_id }) {
         <p>model will go here</p>
       </div>
       {Comments.length === 0 ? (
-        <p> The is no comment for this answers</p>
+        <p>Be the First one To Comment</p>
       ) : (
         Comments?.map((item) => (
           <div class="comment-main">
@@ -24,7 +24,7 @@ export default function Comment({ answer_id }) {
               <div class="comment-text">
                 <div class="comment-text-area">
                   {item?.comment_descprition}
-                  <span>{moment(item?.date).fromNow()}</span>
+                  <span>{moment(item?.date_commented).fromNow()}</span>
                 </div>
               </div>
             </div>

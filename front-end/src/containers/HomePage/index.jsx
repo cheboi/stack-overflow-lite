@@ -38,8 +38,8 @@ const Home = () => {
     }
   }, []);
 
-  const handleAnswers = (question_id) => {
-    dispatch(getAnswers(question_id));
+  const handleAnswers = (id) => {
+    dispatch(getAnswers(id));
     navigate("/answers");
   };
 
@@ -48,7 +48,7 @@ const Home = () => {
       dispatch(searchQuestions(query));
       navigate("/search");
     } else {
-      alert(" no questions such question");
+      alert("No question you can ask?");
     }
   };
 
@@ -71,12 +71,12 @@ const Home = () => {
           <div className={classes.homeContent} key={p.id}>
             <div className="product-details">
               <div
-                onClick={() => handleAnswers(p?.question_id)}
+                onClick={() => handleAnswers(p?.id)}
                 styles={{ color: "yellow" }}
               >
                 <h1>{p?.title}</h1>
                 <p className="description">{p?.description}</p>
-                <div className="time"> <span>{moment(p?.created).fromNow()}</span></div>
+                <div className="time"> <span>{moment(p?.date_asked).fromNow()}</span></div>
               </div>
             </div>
           </div>
