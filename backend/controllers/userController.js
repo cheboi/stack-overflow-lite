@@ -54,7 +54,25 @@ const loginUser = async (req, res) => {
   }
 };
 
+const getUser = async (req, res) => {
+  try {
+    const token = req.headers["x-access-token"];
+    const decode=jwt_decode(token);  
+    const id=decode.id   
+    const response = await (await exec("uspGetUser", { id })).recordsets;
+    let user={user:response[0]}
+    let userQuestions={userQuestions:response[1]}
+    let userAnswers={userAnswers:response[2]}
+    let  userComments={userComments:response[3]}
+    let profile=[user, userQuestions, userAnswers, userComments]
+    res.json(profile);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+}
+
 module.exports = {
   signupUser,
   loginUser,
+  getUser
 };
