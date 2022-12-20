@@ -8,6 +8,6 @@ const { verifyToken } = require("../middleware/index");
 
 const voteRouter = Router();
 
-voteRouter.post("/",updateVotes);
+voteRouter.post("/",verifyToken,updateVotes);
 
 module.exports = { voteRouter };

@@ -66,12 +66,10 @@ const editAnswer = async (req, res) => {
 
 const markAsPreferedAnswer = async (req, res) => {
   try {
-    const {id}  = req.params;
-    const pool = await mssql.connect(sqlConfig);
-    await pool
-      .request()
-      .input("id", id)
-      .execute("markAsPrefered");
+    const { id, prefered } = req.body;
+    await (
+      await exec("markAsPrefered", { id, prefered })
+    ).recordset;
     res.json({ message: "answer prefered" });
   } catch (error) {
     res.status(404).json({ error: error.message });

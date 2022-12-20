@@ -1,7 +1,9 @@
 const { Router } = require("express");
+const { verifyToken } = require("../middleware/index");
+
 const {
   addAnswer,
-  getAnswer,
+  // getAnswer,
   editAnswer,
   markAsPreferedAnswer,
   getAnswers,
@@ -9,11 +11,11 @@ const {
 } = require("../controllers/answerController.js");
 const answerRoute = Router();
 
-answerRoute.post("", addAnswer);
+answerRoute.post("",verifyToken,  addAnswer);
 answerRoute.get("/question/:id", getAnswers);
-answerRoute.post("/:question_id", getAnswer);
-answerRoute.put("/:id", editAnswer);
-answerRoute.put("/prefered/:id", markAsPreferedAnswer);
-answerRoute.post("/vote/:answer_id", downUpVote);
+// answerRoute.post("/:question_id", getAnswer);
+answerRoute.put("/:id",verifyToken, editAnswer);
+answerRoute.put("/prefered/:id",verifyToken,  markAsPreferedAnswer);
+answerRoute.post("/vote/:answer_id",verifyToken, downUpVote);
 
 module.exports = { answerRoute };
