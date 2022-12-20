@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { setHeaders } from "./api/api";
+
 
 const URL = "http://localhost:4000/questions";
 const initialState = {
@@ -22,21 +24,26 @@ export const askQuestion = createAsyncThunk(
   "questions/askedQuestion",
   async (initialQuestion) => {
     const response = await axios
-      .post(URL, initialQuestion)
+      .post(URL, initialQuestion, {headers:setHeaders ()})
       .then((data) => data.json());
     return response.data;
   }
 );
 
 export const searchQuestions = createAsyncThunk(
-  "search/searchquestions",
+  //http://localhost:4000/questions/question/search/
+  "search/searchQuestions",
   async (data) => {
-    let Searches = [];
+    let search = [];
     const response = await axios
-      .post(`${URL}/search`, data)
+      .post(`${URL}/question/search/`, {
+        params: {
+          value: data,
+        },
+      })
       .then((data) => data.data);
-    Searches = [...response];
-    return Searches;
+    search = [...response];
+    return search;
   }
 );
 
@@ -59,11 +66,11 @@ export const getRecentAskedQuestions = createAsyncThunk(
 );
 
 export const getMostAnsweredQuestions = createAsyncThunk(
-  'questions/getMostAnsweredQuestions',
+  "questions/getMostAnsweredQuestions",
   async () => {
     const response = await axios.get(`${URL}/question/mostanseredquestion`);
     const { data } = response.data;
-    return data; 
+    return data;
   }
 );
 
@@ -100,15 +107,15 @@ export const questionSlice = createSlice({
       })
       .addCase(getRecentAskedQuestions.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.questions = action.payload
+        state.questions = action.payload;
       })
       .addCase(getMostAnsweredQuestions.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.questions = action.payload
+        state.questions = action.payload;
       })
       .addCase(searchQuestions.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.questions = action.payload
+        state.questions = action.payload;
       })
   },
 });
@@ -116,6 +123,5 @@ export const questionSlice = createSlice({
 export const selectAllQuestions = (state) => state.questions?.questions;
 export const getQuestionStatus = (state) => state.questions?.status;
 export const getErrorStatus = (state) => state.questions?.error;
-
 
 export default questionSlice.reducer;

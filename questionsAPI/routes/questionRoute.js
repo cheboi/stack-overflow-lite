@@ -14,7 +14,7 @@ const {
 const router = Router();
 
 router.get("/", getQuestions);
-router.post("", verifyToken, askQuestion);
+router.post("",  askQuestion);
 router.put("/:id",verifyToken, updateQuestion);
 router.get("/:id", getQuestionById);
 router.delete("/:id",verifyToken, deleteQuestion);

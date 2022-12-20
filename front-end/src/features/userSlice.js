@@ -10,10 +10,26 @@ const initialState = {
 };
 export const getUserDetails = createAsyncThunk("aswers", async () => {
   let user = [];
-  const response = await axios.post(URL).then((data) => data.data);
+  const response = await axios.get(URL).then((data) => data.data);
   user = [...response];
   return user;
 });
+
+// export const removeQuestion = createAsyncThunk(
+//   "deleteQuestion", async (data) => {
+//   console.log(data.question_id);
+//   await axios.delete(`${url}/question/${data.question_id}`).then((data) => data.data);
+// });
+
+// export const updateQuestion= createAsyncThunk(
+//   "updateQuestion", async (data) => {
+//   await axios.put(`${url}/questions/question/${data.question_id}`).then((data) => data.data);
+// });
+
+// export const updateAnswer= createAsyncThunk("updateanswer", async (data) => {
+//   console.log(data.answer_id);
+//   await axios.patch(`${url}/answers/answer/${data.answer_id}`, data).then((data) => data.data);
+// });
 
 export const userSlice = createSlice({
   name: "user",

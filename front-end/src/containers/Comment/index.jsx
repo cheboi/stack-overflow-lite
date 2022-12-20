@@ -1,30 +1,38 @@
 import React, { useEffect } from "react";
-import { getComments, selectAllComments , getCommentStatus } from "../../features/commentSlice";
+import { getComments } from "../../features/commentSlice";
 import { useSelector, useDispatch } from "react-redux";
+import "./comment.css";
 import moment from "moment";
-export default function Comment({ answer_id }) {
-  const Comments = useSelector(selectAllComments );
-  const commentStatus = useSelector(getCommentStatus);
+import Editable from "./editable";
+
+
+export default function Comment({ answer_id, question_id }) {
+  const Comments = useSelector((state) => state.comment.Comments);
+  const loading = useSelector((state) => state.comment.isLoading);
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(getComments(answer_id));
   }, [dispatch, answer_id]);
-  if (commentStatus === 'loading') return <>Loading</>;
+
+  if (!loading) return <>Loading</>;
+
+  console.log(Comments);
   return (
     <div className="comment_">
       <div className="addcomment">
-        <p>model will go here</p>
+        <Editable answer_id={answer_id} question_id={question_id} />
       </div>
       {Comments.length === 0 ? (
-        <p>Be the First one To Comment</p>
+        <p> No comment yet be the firstone to comment</p>
       ) : (
         Comments?.map((item) => (
-          <div class="comment-main">
+          <div class="comment-main-box">
             <div class="comments-box">
-              <div class="comment-text">
-                <div class="comment-text-area">
+              <div class="comment-text-box">
+                <div class="comment-text">
                   {item?.comment_descprition}
-                  <span>{moment(item?.date_commented).fromNow()}</span>
+                  <span>{moment(item?.comment_created).fromNow()}</span>
                 </div>
               </div>
             </div>

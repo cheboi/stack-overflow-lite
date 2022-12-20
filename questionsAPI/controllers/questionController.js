@@ -1,10 +1,11 @@
 const mssql = require("mssql");
 const moment = require("moment");
+const jwt_decode = require("jwt-decode");
 const { v4 } = require("uuid");
 const sqlConfig = require("../Config/index");
 
 const { exec, query } = require("../DatabaseHelpers/dbhelper.js");
-const {getDays} = require("../DatabaseHelpers/timeHelper")
+const { getDays } = require("../DatabaseHelpers/timeHelper");
 
 const getQuestions = async (req, res) => {
   try {
@@ -22,20 +23,35 @@ const getQuestions = async (req, res) => {
 };
 
 const askQuestion = async (req, res) => {
-  try {    
-    const user_id =  req.headers["user_id"];
+  // try {
+  //   const token = req.headers["x-access-token"];
+  //   const decoded=jwt_decode(token);
+  //   const question_id = uuid.v4();
+  //   const user_id=decoded.user_id
+  //   const created = moment().format();
+  //   const { title, description } = req.body;
+
+  //   res.status(201).json({ message: "Question Inserted to database" });
+  // } catch (error) {
+  //   res.status(404).json({ error: error.message });
+  // }
+  try {
+    const token = req.headers["x-access-token"];
+    const decoded = jwt_decode(token);
+    console.log(decoded);
     const id = v4();
+    const user_id = decoded.id;
     const date_asked = moment().format("YYYY-MM-DD HH:mm:ss");
     const { title, description } = req.body;
-    const pool = await mssql.connect(sqlConfig);
-    await pool
-      .request()
-      .input("id", mssql.VarChar, id)
-      .input("title", mssql.VarChar, title)
-      .input("description", mssql.VarChar, description)
-      .input("user_id", mssql.VarChar, user_id)
-      .input("date_asked", mssql.DateTime, date_asked)
-      .execute("askQuestion");
+    await (
+      await exec("askQuestion", {
+        id,
+        title,
+        description,
+        user_id,
+        date_asked,
+      })
+    ).recordset;
     res.status(201).json({ message: "question Asked" });
   } catch (error) {
     res.status(404).json({ error: error.message });
@@ -44,7 +60,6 @@ const askQuestion = async (req, res) => {
 
 const updateQuestion = async (req, res) => {
   try {
-
     const { id } = req.params;
     const { title, description } = req.body;
 
@@ -186,26 +201,28 @@ const getMostAnsweredQuestion = async (req, res) => {
 
 const getRecentQuestions = async (req, res) => {
   try {
-    const questions = await (await execute('uspGetMostRecentQuestions')).recordset;
+    const questions = await (
+      await execute("uspGetMostRecentQuestions")
+    ).recordset;
 
     let data = getDays(questions);
 
     if (questions) {
       return res.status(200).json({
-        msg: 'Questions fetched successfully',
-        data
-      })
+        msg: "Questions fetched successfully",
+        data,
+      });
     } else {
       return res.status(404).json({
-        msg: 'Not questions were found'
-      })
+        msg: "Not questions were found",
+      });
     }
   } catch (error) {
     return res.status(500).json({
-      msg: error
-    })
+      msg: error,
+    });
   }
-}
+};
 
 module.exports = {
   getQuestions,
@@ -216,5 +233,5 @@ module.exports = {
   searchQuesstion,
   getMostAnsweredQuestion,
   getUserQuestions,
-  getRecentQuestions
+  getRecentQuestions,
 };

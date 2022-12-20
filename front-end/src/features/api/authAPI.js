@@ -4,7 +4,6 @@ export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:8080/user/',
-    // baseUrl: 'http://127.0.0.1:5000/',
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth.userToken
       if (token) {
@@ -13,10 +12,11 @@ export const authApi = createApi({
       }
     },
   }),
+
   endpoints: (build) => ({
     getDetails: build.query({
       query: () => ({
-        url: 'api/user/profile',
+        url: 'http://localhost:4000/questions',
         method: 'GET',
       }),
     }),

@@ -14,10 +14,7 @@ export const getAnswers = createAsyncThunk(
     let Answers = [];
     try {
       const response = await axios
-        .get(
-          `${URL}/question/${thunkAPI}`,
-          { headers: setHeaders() }
-        )
+        .get(`${URL}/question/${thunkAPI}`, { headers: setHeaders() })
         .then((data) => data.data);
       Answers = [...response];
       return Answers;
@@ -53,9 +50,23 @@ export const updateAnswer = createAsyncThunk(
 
 export const VoteAnswer = createAsyncThunk("votes/voteAnswer", async (data) => {
   const response = await axios
-    .post(`${URL}/vote/${data.answer_id}`, data
-    //  { headers: authHeader() }
-     )
+    .post(
+      `${URL}/vote/${data.answer_id}`,
+      data
+      //  { headers: authHeader() }
+    )
+    .then((data) => data.data);
+  return response;
+});
+
+export const preferedAnswer = createAsyncThunk("accepted", async (data) => {
+  console.log(data);
+  const response = await axios
+    .put(
+      `${URL}/prefered`,
+      data
+      //  { headers: setHeaders() }
+    )
     .then((data) => data.data);
   return response;
 });

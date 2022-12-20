@@ -27,7 +27,7 @@ const signupUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const {  email, password } = req.body;
 
     const user = await (await exec("getUser", { email })).recordset[0];
     if (user) {
