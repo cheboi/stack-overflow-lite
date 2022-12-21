@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import authHeader from "../services/auth.header.js";
+import { setHeaders } from "./api/api";
 const URL = "http://localhost:4000/answers";
 
 const initialState = {
@@ -10,40 +10,57 @@ const initialState = {
 };
 export const getAnswers = createAsyncThunk(
   "answers/getAnswers",
-  async (data) => {
-    let answers = [];
-    const response = await axios
-      .post(`${URL}/${data}`, data)
-      .then((data) => data.data);
-    answers = [...response];
-    console.log(answers);
-    return answers;
+  async (thunkAPI) => {
+    let Answers = [];
+    try {
+      const response = await axios
+        .get(`${URL}/question/${thunkAPI}`, { headers: setHeaders() })
+        .then((data) => data.data);
+      Answers = [...response];
+      return Answers;
+    } catch (err) {
+      return thunkAPI.rejectWithValue({ error: err.message });
+    }
   }
 );
 
 export const addAnswer = createAsyncThunk(
-  "answer/addAnswer",
-  async (data) => {
-    console.log(data);
+  "answers/addAnswer",
+  async (initialQuestion) => {
     const response = await axios
-      .post(URL, data, { headers: authHeader() })
+      .post(URL, initialQuestion, {headers:setHeaders ()})
       .then((data) => data.json());
-    return response;
-  },
-  getAnswers()
+    return response.data;
+  }
 );
 
 export const updateAnswer = createAsyncThunk(
-  "answer/updateAnswer",
+  "answers/updateAnswer",
   async (data) => {
-    console.log(data);
+    // console.log(data);
     const response = await axios
-      .put(`${URL}/${data.id}`, data)
+      .put(`${URL}/${data.id}`, data, { headers: setHeaders() })
       .then((data) => data.data);
     return response;
   },
   getAnswers()
 );
+
+export const VoteAnswer = createAsyncThunk("votes/voteAnswer", async (data) => {
+  const response = await axios
+    .post(`${URL}/vote/${data.answer_id}`, data, { headers: setHeaders() })
+    .then((data) => data.data);
+  return response;
+});
+
+export const preferedAnswer = createAsyncThunk("accepted", async (data) => {
+  console.log(data);
+  const response = await axios
+    .put(`${URL}/prefered`, data, { headers: setHeaders() })
+    .then((data) => data.data);
+  return response;
+});
+
 export const answerSlice = createSlice({
   name: "answer",
   initialState,
@@ -64,9 +81,9 @@ export const answerSlice = createSlice({
   },
 });
 
-export const selectAllAnswers = (state) => state.answers?.questions;
-export const getAnswerStatus = (state) => state.answers?.status;
-export const getErrorStatus = (state) => state.answers?.error;
+export const selectAllAnswers = (state) => state.answer?.answers;
+export const getAnswerStatus = (state) => state.answer?.status;
+export const getErrorStatus = (state) => state.answer?.error;
 
 const answerReducer = answerSlice.reducer;
 export default answerReducer;

@@ -1,22 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { GoTriangleUp, GoTriangleDown } from "react-icons/go";
+import { BsCloudCheckFill } from "react-icons/bs";
+import { FcAcceptDatabase } from "react-icons/fc";
+import { MdCancel } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
+import { setHeaders } from "../../features/api/api";
+import Comment from "../Comment/index";
+import {
+  getAnswerStatus,
+  selectAllAnswers,
+  getErrorStatus,
+  getAnswers,
+  addAnswer,
+  VoteAnswer,
+  preferedAnswer,
+} from "../../features/answerSlice";
+import jwt from "jwt-decode";
+import moment from "moment";
+
 import Modal from "react-modal";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { Mention, MentionsInput } from "react-mentions";
-import mentionsInputStyle from "../../styles/mentionsInputStyles.js";
-import mentionStyle from "../../styles/mentionStyles.js";
-import styles from "./comment.module.css";
-
-import { selectAllAnswers, getAnswerStatus, getErrorStatus, getAnswers } from '../../features/answerSlice'
-
-import { getQuestions, selectAllQuestions } from "../../features/questionSlice";
 
 import classes from "../HomePage/home.module.css";
+import "../../style.css";
 
-const INITIAL_VALUES = {};
+const INITIAL_VALUES = { answer: "" };
 const answerSchema = Yup.object().shape({
   description: Yup.string().min(2, "Too Short!").required("Required"),
 });
@@ -31,48 +41,25 @@ const customStyles = {
   },
 };
 
-// Modal.setAppElement("#yourAppElement");
-
 const Answers = () => {
   const dispatch = useDispatch();
-  const questions = useSelector(selectAllQuestions);
-  const answers = useSelector(selectAllAnswers );
-  const answerStatus = useSelector(getAnswerStatus);
+
+  const answer = useSelector(selectAllAnswers);
+  const status = useSelector(getAnswerStatus);
   const answerError = useSelector(getErrorStatus);
   const navigate = useNavigate();
+  const token = setHeaders()["x-access-token"];
+  const decode = jwt(token, { headers: true });
+
+  const user_id = decode.id;
+
+  console.log(answer);
 
   let subtitle;
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [show, setShow] = useState(false);
-  const [formState, setFormState] = useState({
-    username: "",
-    comment: "",
-  });
-  const [comments, setComments] = useState([]);
-  const [emojiValue, setEmojiValue] = useState([]);
-  const notMatchingRegex = /($a)/;
+  const [show, setShow] = useState(-1);
 
-  // console.log("data is Working");
-
-  useEffect(() => {
-    dispatch(getQuestions());
-  }, []);  
-  
-  useEffect(() => {
-    dispatch(getAnswers());
-  }, []);
-
-  useEffect(() => {
-    fetch(
-      "https://gist.githubusercontent.com/oliveratgithub/0bf11a9aff0d6da7b46f1490f86a71eb/raw/d8e4b78cfe66862cf3809443c1dba017f37b61db/emojis.json"
-    )
-      .then((data) => {
-        return data.json();
-      })
-      .then((jsonData) => {
-        setEmojiValue(jsonData.emojis);
-      });
-  }, []);
+  const [isActive, setIsActive] = useState(false);
 
   function openModal() {
     setIsOpen(true);
@@ -86,58 +73,76 @@ const Answers = () => {
     subtitle.style.color = "#3d79fc";
   }
 
-  const queryEmojis = (query, callback) => {
-    if (query.length === 0) return;
-    const filterValue = emojiValue
-      .filter((emoji) => {
-        return emoji.name.indexOf(query.toLowerCase()) > -1;
-      })
-      .slice(0, 10);
-    return filterValue.map(({ emoji }) => ({ id: emoji }));
-  };
-  const users = [
-    {
-      id: "isaac",
-      display: "Isaac Emanuel",
-    },
-    {
-      id: "Cheboi",
-      display: "moses@sumbey.com",
-    },
-    {
-      id: "emma",
-      display: "emmanuel@nobody.com",
-    },
-  ];
+  useEffect(() => {
+    // eslint-disable-next-line no-unused-vars
+    let isMounted = true;
 
-  const submit = () => {
-    if (
-      // formState.username === "" ||
-      formState.comment === ""
-    ) {
-      alert("Please fill in all fields");
-      return;
+    // If status is 'idle', then fetch the posts data from the API
+    if (status === "idle") {
+      dispatch(getAnswers());
     }
 
-    setComments((comments) => [
-      ...comments,
-      {
-        username: formState.username,
-        comment: formState.comment,
-      },
-    ]);
-    setFormState({
-      username: "",
-      comment: "",
-    });
+    // Cleanup function
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, dispatch]);
+
+  console.log("All Answers" + JSON.stringify(answer));
+
+  const handleUpVote = (vote) => {
+    let V = { ...vote, upvote: 1, Vote: 0 };
+    dispatch(VoteAnswer(V));
   };
 
-  const current = new Date();
-  const date = `${current.getDate()}/${
-    current.getMonth() + 1
-  }/${current.getFullYear()}`;
+  const handleDownVote = (vote) => {
+    let V = { ...vote, upvote: 0, Vote: 1 };
+    dispatch(VoteAnswer(V));
+  };
+  const getComentHandler = () => {
+    setShow((prev) => !prev);
+  };
 
-  console.log(questions);
+  const handlePrefered = (data) => {
+    dispatch(preferedAnswer(data));
+  };
+  const rejectPrefered = (data) => {
+    dispatch(preferedAnswer(data));
+  };
+
+  let bodyContent;
+
+  if (status === "loading") {
+    bodyContent = <div className="loader"></div>;
+  } else if (status === "successful") {
+    const sortedAnswers = answer.slice().sort((a, b) => b.id - a.id);
+
+    bodyContent = sortedAnswers.map((answer) => (
+      <div key={answer.id}>
+        <p>{answer.answer}</p>
+      </div>
+    ));
+  } else {
+    bodyContent = <div>{answerError}</div>;
+  }
+
+  const onSaveQuestionClicked = async (formValues) => {
+    const { answer } = formValues;
+    try {
+      await dispatch(
+        addAnswer({
+          answer,
+        })
+      ).unwrap();
+
+      navigate("/");
+    } catch (err) {
+      console.error("Failed to save the answer", err);
+    } finally {
+    }
+  };
+
   return (
     <div className={classes.homeContainer}>
       <div className={classes.homeContent}>
@@ -157,21 +162,17 @@ const Answers = () => {
           <Formik
             initialValues={INITIAL_VALUES}
             validationSchema={answerSchema}
-            onSubmit={({ setSubmitting }) => {
-              alert("Form is validated! Submitting the form");
-              navigate("/answers");
-              setSubmitting(false);
-            }}
+            onSubmit={onSaveQuestionClicked()}
           >
             {({ errors, touched }) => (
               <Form>
                 <div className={classes.questionForm}>
                   <div className="form-group">
-                    <label htmlFor="description">Answer The The Question</label>
+                    <label htmlFor="answer">Answer The The Question</label>
                     <br />
                     <Field
                       type="field"
-                      name="description"
+                      name="answer"
                       className={classes.descriptionField}
                     />
                     {errors.description && touched.descripttion ? (
@@ -191,80 +192,114 @@ const Answers = () => {
             )}
           </Formik>
         </Modal>
-        <div style={{ margin: "20px" }}>
-          <div className={classes.homeCard}>
-            <div className={classes.votesSection}>
-              <GoTriangleUp />
-              <br />
-              7
-              <br />
-              <GoTriangleDown />
-            </div>
-            <div className={classes.questionSections}>
-              <p style={{ width: "60vw" }}>Answers will be displayed Here</p>
-            </div>
-            <ul className={classes.anSwerDetail}>
-              <li>@Cheboi</li>
-              <li>11/12/2022</li>
-              <li></li>
-            </ul>
-          </div>
-          <div className={classes.CommentContainer}>
-            <button onClick={() => setShow((prev) => !prev)}>Comments</button>
-            {show && (
-              <div className={styles.form}>
-                <section className={styles.formCard}>
-                  <MentionsInput
-                    placeholder="Add Comment. Use '@' for mention"
-                    value={formState.comment}
-                    onChange={(e) =>
-                      setFormState({ ...formState, comment: e.target.value })
-                    }
-                    style={mentionsInputStyle}
-                  >
-                    <Mention style={mentionStyle} data={users} />
-                  </MentionsInput>
-                  <button className={styles.mentionBtn} onClick={submit}>
-                    Submit
-                  </button>
-                </section>
-                {comments.length === 0 ? null : (
-                  <section>
-                    {comments.map((comment, i) => (
-                      <div className={styles.commentCard} key={i}>
-                        <p className={styles.username}>
-                          {comment.username} on {date}
-                        </p>
-                        <h2>{comment.comment}</h2>
+        <div className="accordion">
+          <div className="accordion-item">
+            <div
+              className="accordion-title"
+              onClick={() => setIsActive(!isActive)}
+            >
+              {answer[0]?.id === null ? (
+                <p>
+                  No one has Answered the question! do you know the answer or
+                  some who knows the answer?
+                </p>
+              ) : (
+                answer?.map((item, index) => (
+                  <div>
+                    <div className={classes.homeCard}>
+                      <div className="answer_container">
+                        {user_id === item.user_id ? (
+                          <div className="accept_answer">
+                            <BsCloudCheckFill
+                              onClick={() => {
+                                handlePrefered({
+                                  ...item,
+                                  prefered: 1,
+                                });
+                              }}
+                              style={{
+                                color: "green",
+                                fontSize: "20px",
+                              }}
+                            />
+
+                            <MdCancel
+                              onClick={() => {
+                                rejectPrefered({
+                                  ...item,
+                                  prefered: 0,
+                                });
+                              }}
+                              style={{
+                                color: "red",
+                                fontSize: "15px",
+                              }}
+                            />
+                          </div>
+                        ) : null}
                       </div>
-                    ))}
-                  </section>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-        <div>
-          <div className={classes.homeCard}>
-            <div className={classes.votesSection}>
-              <GoTriangleUp />
-              <br />
-              4
-              <br />
-              <GoTriangleDown />
+                      <div className={classes.votesSection}>
+                        <button
+                          onClick={() => {
+                            handleUpVote(item);
+                          }}
+                        >
+                          <GoTriangleUp />
+                          <br />
+                        </button>
+                        <span style={{ paddingLeft: "2px" }}>
+                          {item.count}
+                          {item?.prefered === true ? (
+                            <i
+                              class="fa fa-check"
+                              style={{
+                                color: "green",
+                                fontSize: "20px",
+                                paddingLeft: "6px",
+                              }}
+                            ></i>
+                          ) : null}
+                        </span>
+                        <br />
+                        <GoTriangleDown
+                          onClick={() => {
+                            handleDownVote(item);
+                          }}
+                        />
+                        {item?.prefered === true ? <FcAcceptDatabase /> : null}
+                      </div>
+                      <div className={classes.questionSections}>
+                        <p style={{ width: "60vw" }}>{item.answer}</p>
+                      </div>
+                      <ul className={classes.anSwerDetail}>
+                        <li>
+                          <span>{moment(item.date_answered).fromNow()}</span>
+                        </li>
+                        <li></li>
+                      </ul>
+                    </div>
+                    <div className="comment-btn">
+                      <div
+                        onClick={() => {
+                          getComentHandler(index);
+                        }}
+                      >
+                        {show === index ? (
+                          <i class="fas fa-minus-circle"></i>
+                        ) : (
+                          <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                        )}
+                      </div>
+                    </div>
+                    <div className="comment_add">
+                      {show === index ? (
+                        <Comment answer_id={item?.answer_id} />
+                      ) : null}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
-            <div className={classes.questionSections}>
-              <p style={{ width: "60vw" }}>Questions will be displayed Here</p>
-            </div>
-            <ul className={classes.anSwerDetail}>
-              <li>
-                <Link style={{ textDecoration: "none" }}>@Barkute</Link>
-              </li>
-              <li>02/11/2022</li>
-              <li>
-                <Link></Link>
-              </li>
-            </ul>
           </div>
         </div>
       </div>

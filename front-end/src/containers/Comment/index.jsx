@@ -1,120 +1,44 @@
-import React, { useState, useEffect } from "react";
-import { Mention, MentionsInput } from "react-mentions";
-//front-end\src\styles\
-import mentionsInputStyle from "../../styles/mentionsInputStyles.js";
-import mentionStyle from "../../styles/mentionStyles.js";
-import styles from "./comment.module.css";
+import React, { useEffect } from "react";
+import { getComments } from "../../features/commentSlice";
+import { useSelector, useDispatch } from "react-redux";
+import "./comment.css";
+import moment from "moment";
+import Editable from "./editable";
 
-function Comment() {
-  const [formState, setFormState] = useState({
-    username: "",
-    comment: "",
-  });
-  const [comments, setComments] = useState([]);
-  const [emojiValue, setEmojiValue] = useState([]);
-  const notMatchingRegex = /($a)/;
+
+export default function Comment({ answer_id }) {
+  const Comments = useSelector((state) => state.comment.Comments);
+  const loading = useSelector((state) => state.comment.isLoading);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    fetch(
-      "https://gist.githubusercontent.com/oliveratgithub/0bf11a9aff0d6da7b46f1490f86a71eb/raw/d8e4b78cfe66862cf3809443c1dba017f37b61db/emojis.json"
-    )
-      .then((data) => {
-        return data.json();
-      })
-      .then((jsonData) => {
-        setEmojiValue(jsonData.emojis);
-      });
-  }, []);
-  const queryEmojis = (query, callback) => {
-    if (query.length === 0) return;
-    const filterValue = emojiValue
-      .filter((emoji) => {
-        return emoji.name.indexOf(query.toLowerCase()) > -1;
-      })
-      .slice(0, 10);
-    return filterValue.map(({ emoji }) => ({ id: emoji }));
-  };
-  const users = [
-    {
-      id: "isaac",
-      display: "Isaac Emanuel",
-    },
-    {
-      id: "sam",
-      display: "moses@sumbey.com",
-    },
-    {
-      id: "emma",
-      display: "emmanuel@nobody.com",
-    },
-  ];
+    dispatch(getComments(answer_id));
+  }, [dispatch, answer_id]);
 
-  const submit = () => {
-    if (
-      // formState.username === "" ||
-      formState.comment === ""
-    ) {
-      alert("Please fill in all fields");
-      return;
-    }
+  if (!loading) return <>Loading</>;
 
-    setComments((comments) => [
-      ...comments,
-      {
-        username: formState.username,
-        comment: formState.comment,
-      },
-    ]);
-    setFormState({
-      username: "",
-      comment: "",
-    });
-  };
-
-  const current = new Date();
-  const date = `${current.getDate()}/${
-    current.getMonth() + 1
-  }/${current.getFullYear()}`;
-
+  console.log(Comments);
   return (
-    <div className={styles.form}>
-      <section className={styles.formCard}>
-        <h2 className={styles.formTitle}>Comment Form</h2>
-        {/* <input
-          type="text"
-          value={formState.username}
-          onChange={(e) =>
-            setFormState({ ...formState, username: e.target.value })
-          }
-          placeholder="Input Your Name"
-        /> */}
-        <MentionsInput
-          placeholder="Add Comment. Use '@' for mention"
-          value={formState.comment}
-          onChange={(e) =>
-            setFormState({ ...formState, comment: e.target.value })
-          }
-          style={mentionsInputStyle}
-        >
-          <Mention style={mentionStyle} data={users} />
-        </MentionsInput>
-        <button className={styles.mentionBtn} onClick={submit}>
-          Submit
-        </button>
-      </section>
-      {comments.length === 0 ? null : (
-        <section>
-          {comments.map((comment, i) => (
-            <div className={styles.commentCard} key={i}>
-              <p className={styles.username}>
-                {comment.username} on {date}
-              </p>
-              <h2>{comment.comment}</h2>
+    <div className="comment_">
+      <div className="addcomment">
+        <Editable answer_id={answer_id} />
+      </div>
+      {Comments.length === 0 ? (
+        <p> No comment yet be the firstone to comment</p>
+      ) : (
+        Comments?.map((item) => (
+          <div class="comment-main-box">
+            <div class="comments-box">
+              <div class="comment-text-box">
+                <div class="comment-text">
+                  {item?.comment_descprition}
+                  <span>{moment(item?.comment_created).fromNow()}</span>
+                </div>
+              </div>
             </div>
-          ))}
-        </section>
+          </div>
+        ))
       )}
     </div>
   );
 }
-export default Comment;

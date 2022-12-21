@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import axios from "axios";
+import { askQuestion } from "../../features/questionSlice";
 
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 
 import classes from "./askquestion.module.css";
-const INITIAL_VALUES = { queststiontitle: "", description: "" };
+const INITIAL_VALUES = { title: "", description: "" };
 
 const questionSchema = Yup.object().shape({
-  questiontitle: Yup.string()
+  title: Yup.string()
     .min(2, "Too Short!")
     .max(50, "Too Long!")
     .required("Required"),
@@ -21,81 +22,33 @@ const AskquestionForm = () => {
 
   const dispatch = useDispatch();
 
-  // const [title, setTitle] = useState("");
-  // const [description, setDescription] = useState("");
-  // const [image, setImage] = useState("");
-  // const [price, setPrice] = useState();
-  // const [discountRate, setDiscountRate] = useState("");
+  const [addRequestStatus, setAddRequestStatus] = useState("idle");
 
-  // const [addRequestStatus, setAddRequestStatus] = useState("idle");
 
-  // const onTitleChanged = (e) => setTitle(e.target.value);
-  // const onDescriptionChanged = (e) => setDescription(e.target.value);
-  // const onPriceChanged = (e) => setPrice(e.target.value);
-  // const onDiscountChanged = (e) => setDiscountRate(e.target.value);
-  // const onImageChanged = (e) => setImage(e.target.value);
+  const onSaveQuestionClicked = async (formValues) => {
+    const { questiontitle, description } = formValues;
+      try {
+        setAddRequestStatus("pending");
+        await dispatch(
+          askQuestion({
+            questiontitle,
+            description,
+          })
+        ).unwrap();
 
-  // const canSave =
-  //   [title, description, price, image, discountRate].every(Boolean) &&
-  //   addRequestStatus === "idle";
+        navigate("/");
+      } catch (err) {
+        console.error("Failed to save the question", err);
+      } finally {
+        setAddRequestStatus("idle");
+      }
+  };
 
-  // const onSaveProductClicked = () => {
-  //   if (canSave) {
-  //     try {
-  //       setAddRequestStatus("pending");
-  //       dispatch(
-  //         addNewProduct({
-  //           title,
-  //           price,
-  //           image,
-  //           discountRate,
-  //           body: description,
-  //         })
-  //       ).unwrap();
-
-  //       setTitle("");
-  //       setDescription("");
-  //       setImage("");
-  //       setPrice("");
-  //       setDiscountRate("");
-  //     } catch (err) {
-  //       console.error("Failed to save the product", err);
-  //     } finally {
-  //       setAddRequestStatus("idle");
-  //     }
-  //   }
-  // };
-
-  // const handleSubmit = () => {};
   return (
     <Formik
       initialValues={INITIAL_VALUES}
       validationSchema={questionSchema}
-      onSubmit={({ setSubmitting, data }) => {
-        // alert("Form is validated! Submitting the form");
-        // navigate("/");
-
-        console.log(data);
-        let formData = new FormData();
-        formData.append("questiontitle", data.queststiontitle);
-        formData.append("description", data.description);
-        // formData.append('password', data.password)
-
-        axios({
-          method: "POST",
-          url: "http://localhost:4000/questions",
-          data: formData,
-        })
-          .then(function (res) {
-            console.log(res);
-            // alert('Successfully signed up!');
-          })
-          .catch(function (res) {
-            console.log(res);
-          });
-
-        setSubmitting(false);
-      }}
+      onSubmit={onSaveQuestionClicked}
     >
       {({ errors, touched }) => (
         <Form>
@@ -105,11 +58,11 @@ const AskquestionForm = () => {
               <br />
               <Field
                 type="text"
-                name="queststiontitle"
+                name="title"
                 className={classes.questionTitle}
               />
-              {errors.descriptiontitle && touched.description ? (
-                <div>{errors.descriptiontitle}</div>
+              {errors.title && touched.description ? (
+                <div>{errors.title}</div>
               ) : null}
             </div>
             <div className="form-group">

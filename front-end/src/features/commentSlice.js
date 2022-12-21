@@ -1,34 +1,36 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import authHeader from "../services/auth.header";
+import { setHeaders } from "./api/api";
 
-const url = "http://localhost:4000/comments";
+const url = "http://localhost:4000/comment/";
 const initialState = {
   comments: [],
   status: "idle", //'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
 };
-export const getComments = createAsyncThunk("comments/getComments", async (data) => {
-  let Comments = [];
-  const response = await axios
-    .post(`${url}/${data}`, data)
-    .then((data) => data.data);
-  Comments = [...response];
-  return Comments;
-});
+export const getComments = createAsyncThunk(
+  "comments/getComments",
+  async (data) => {
+    let Comments = [];
+    const response = await axios
+      .get(`${url}/${data}`, data
+      , {headers:setHeaders ()}
+      )
+      .then((data) => data.data);
+    Comments = [...response];
+    return Comments;
+  }
+);
 
 export const addComment = createAsyncThunk(
   "comments/addComment",
   async (data) => {
     console.log(data);
-    const response = await axios
-      .post(url, data, { headers: authHeader() })
-      .then((data) => data.json());
+    const response = await axios.post(url, data, {headers:setHeaders ()}).then((data) => data.json());
     return response;
   },
   getComments()
 );
-
 
 export const commentSlice = createSlice({
   name: "comments",
@@ -41,18 +43,18 @@ export const commentSlice = createSlice({
       })
       .addCase(getComments.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.questions = action.payload;
+        state.comments = action.payload;
       })
       .addCase(getComments.rejected, (state, action) => {
         state.status = "failed";
-        state.questions = action.payload.message.error;
+        state.comments = action.payload.message.error;
       });
   },
 });
 
-export const selectAllCommentss = (state) => state.comments?.questions;
-export const getCommentStatus = (state) => state.comments?.status;
-export const getErrorStatus = (state) => state.comments?.error;
+export const selectAllComments = (state) => state.comment?.comments;
+export const getCommentStatus = (state) => state.comment?.status;
+export const getErrorStatus = (state) => state.comment?.error;
 
 const commentReducer = commentSlice.reducer;
 export default commentReducer;

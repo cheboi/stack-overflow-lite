@@ -1,9 +1,11 @@
 const mssql = require("mssql");
 const moment = require("moment");
+const jwt_decode = require("jwt-decode");
 const { v4 } = require("uuid");
 const sqlConfig = require("../Config/index");
 
 const { exec, query } = require("../DatabaseHelpers/dbhelper.js");
+const { getDays } = require("../DatabaseHelpers/timeHelper");
 
 const getQuestions = async (req, res) => {
   try {
@@ -21,20 +23,35 @@ const getQuestions = async (req, res) => {
 };
 
 const askQuestion = async (req, res) => {
-  try {    
-    const user_id =  req.headers["user_id"];
+  // try {
+  //   const token = req.headers["x-access-token"];
+  //   const decoded=jwt_decode(token);
+  //   const question_id = uuid.v4();
+  //   const user_id=decoded.user_id
+  //   const created = moment().format();
+  //   const { title, description } = req.body;
+
+  //   res.status(201).json({ message: "Question Inserted to database" });
+  // } catch (error) {
+  //   res.status(404).json({ error: error.message });
+  // }
+  try {
+    const token = req.headers["x-access-token"];
+    const decoded = jwt_decode(token);
+    console.log(decoded);
     const id = v4();
+    const user_id = decoded.id;
     const date_asked = moment().format("YYYY-MM-DD HH:mm:ss");
     const { title, description } = req.body;
-    const pool = await mssql.connect(sqlConfig);
-    await pool
-      .request()
-      .input("id", mssql.VarChar, id)
-      .input("title", mssql.VarChar, title)
-      .input("description", mssql.VarChar, description)
-      .input("user_id", mssql.VarChar, user_id)
-      .input("date_asked", mssql.DateTime, date_asked)
-      .execute("askQuestion");
+    await (
+      await exec("askQuestion", {
+        id,
+        title,
+        description,
+        user_id,
+        date_asked,
+      })
+    ).recordset;
     res.status(201).json({ message: "question Asked" });
   } catch (error) {
     res.status(404).json({ error: error.message });
@@ -43,7 +60,6 @@ const askQuestion = async (req, res) => {
 
 const updateQuestion = async (req, res) => {
   try {
-
     const { id } = req.params;
     const { title, description } = req.body;
 
@@ -106,7 +122,7 @@ const searchQuesstion = async (req, res) => {
     const { value } = req.query;
     console.log(value);
     const questions =
-      (await (await exec("uspsearchQuestion", { value })).recordsets) || [];
+      (await (await exec("uspsearchQuestion", { value })).recordset) || [];
 
     const qn = await exec("uspsearchQuestion", { value });
 
@@ -138,42 +154,31 @@ const getUserQuestions = async (req, res) => {
 };
 
 const getMostAnsweredQuestion = async (req, res) => {
-  // try {
-  //   const { range } = req.query;
-  //   const pool = await mssql.connect(sqlConfig);
-  //   const response = await pool.request().execute("uspMostAnsweredQuestions");
-  //   const questions = await response.recordset;
-  //   res.json(questions);
-  // } catch (error) {
-  //   res.status(404).json({ error: error.message });
-  // }
-
   try {
-    const { range } = req.query;
+    const response = await exec("mostAnswerQuestion");
+    const questions = await response.recordset;
+    res.json(questions);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+};
 
+const getRecentQuestions = async (req, res) => {
+  try {
     const questions = await (
-      await execute("uspMostAnsweredQuestions", { range })
+      await execute("uspGetMostRecentQuestions")
     ).recordset;
 
-    if (questions.length > 0) {
-      let qnFilter = questions.map((qn) => {
-        return qn.id;
-      });
+    let data = getDays(questions);
 
-      const allQuestions = await (await execute("getQuestions")).recordset;
-
-      const filteredData = allQuestions.filter((question) =>
-        qnFilter.includes(question.id)
-      );
-
+    if (questions) {
       return res.status(200).json({
         msg: "Questions fetched successfully",
-        data: filteredData,
+        data,
       });
     } else {
       return res.status(404).json({
-        msg: "Your have more than those questions",
-        data: [],
+        msg: "Not questions were found",
       });
     }
   } catch (error) {
@@ -192,4 +197,5 @@ module.exports = {
   searchQuesstion,
   getMostAnsweredQuestion,
   getUserQuestions,
+  getRecentQuestions,
 };

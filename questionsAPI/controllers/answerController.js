@@ -1,9 +1,10 @@
 const sqlConfig = require("../config/index");
 const mssql = require("mssql");
+const jwt_decode = require("jwt-decode");
 const uuid = require("uuid");
 const moment = require("moment");
 require("dotenv").config();
-
+const { exec } = require("../DatabaseHelpers/dbhelper");
 const addAnswer = async (req, res) => {
   try {
     // const user_email = req.headers["user_id"];
@@ -65,49 +66,68 @@ const editAnswer = async (req, res) => {
 
 const markAsPreferedAnswer = async (req, res) => {
   try {
-    const {id}  = req.params;
-    const pool = await mssql.connect(sqlConfig);
-    await pool
-      .request()
-      .input("id", id)
-      .execute("markAsPrefered");
+    const { id, prefered } = req.body;
+    await (
+      await exec("markAsPrefered", { id, prefered })
+    ).recordset;
     res.json({ message: "answer prefered" });
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
 };
 
-const getAnswers= async (req, res) => {
+const getAnswers = async (req, res) => {
   try {
-    const pool = await mssql.connect(sqlConfig);
-    const response = await pool.request().execute("getAnswers");
-    const qn = await response.recordset;
-    if (qn.length) {
-      return res.status(200).json(qn);
-    } else {
-      res.status(404).json({ message: "No Answers for now" });
+    const { id } = req.params;
+    const response = await (await exec("uspGetAnswers", { id })).recordsets;
+    let answers = response[0];
+    for (let i of response[0]) {
+      i.count = 0;
+      let upvote = 0;
+      let downvote = 0;
+      for (let j of response[1]) {
+        if (i.answer_id === j.answer_id && j.Vote === true) {
+          upvote += 1;
+        } else if (i.answer_id === j.answer_id && j.Vote === false) {
+          downvote += 1;
+        } else {
+          i.count = 0;
+        }
+        i.count = upvote - downvote;
+      }
     }
+    res.json(answers);
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
-
-  // try {
-  //   const questions = await exec("getQuestions");
-  //   if (questions.length) {
-  //     return res.status(200).json(questions);
-  //   } else {
-  //     res.status(404).json({ message: "No questions for now" });
-  //   }
-  // } catch (error) {
-  //   return res.status(404).json({ error: error.message });
-  // }
 };
 
+const downUpVote = async (req, res) => {
+  try {
+    const token = req.headers["x-access-token"];
+    const decoded = jwt_decode(token);
+    const user_id = decoded.id;
+    console.log(req.body);
+    const { answer_id, Vote } = req.body;
+    await (
+      await exec("insertUpdateVote", {
+        user_id,
+        answer_id,
+        Vote,
+      })
+    ).recordset;
+
+    res.status(201).json({ message: "Your vote counted" });
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+};
 
 module.exports = {
   addAnswer,
   editAnswer,
   getAnswer,
   markAsPreferedAnswer,
-  getAnswers
+  getAnswers,
+  downUpVote,
 };

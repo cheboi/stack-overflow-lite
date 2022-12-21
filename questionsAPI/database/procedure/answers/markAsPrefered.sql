@@ -1,12 +1,8 @@
-CREATE OR ALTER PROCEDURE markAsPrefered(@id varchar(50))
+CREATE or ALTER PROCEDURE markAsPrefered(
+    @id VARCHAR(50),
+    @prefered BIT 
+)
 AS
 BEGIN
-	IF EXISTS(SELECT * FROM dbo.answerTable WHERE id=@id)
-		BEGIN
-			UPDATE dbo.answerTable SET prefered=1 WHERE id=@id
-		END
-		ELSE
-		BEGIN
-			RAISERROR ('No question at the moment',11,1)
-		END
+UPDATE answerTable SET prefered=@prefered WHERE id=@id
 END
