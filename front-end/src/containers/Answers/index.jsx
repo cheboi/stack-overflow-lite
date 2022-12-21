@@ -12,6 +12,7 @@ import {
   selectAllAnswers,
   getErrorStatus,
   getAnswers,
+  addAnswer,
   VoteAnswer,
   preferedAnswer,
 } from "../../features/answerSlice";
@@ -25,7 +26,7 @@ import * as Yup from "yup";
 import classes from "../HomePage/home.module.css";
 import "../../style.css";
 
-const INITIAL_VALUES = {};
+const INITIAL_VALUES = { answer: "" };
 const answerSchema = Yup.object().shape({
   description: Yup.string().min(2, "Too Short!").required("Required"),
 });
@@ -50,16 +51,13 @@ const Answers = () => {
   const token = setHeaders()["x-access-token"];
   const decode = jwt(token, { headers: true });
 
-  const userName = JSON.stringify(decode);
+  const user_id = decode.id;
 
-  const user_name = userName.username;
-
-  console.log("hdfghjsedgfhjsd" + user_name);
-  // console.log("this User Id" + user_id);
+  console.log(answer);
 
   let subtitle;
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(-1);
 
   const [isActive, setIsActive] = useState(false);
 
@@ -118,20 +116,32 @@ const Answers = () => {
   if (status === "loading") {
     bodyContent = <div className="loader"></div>;
   } else if (status === "successful") {
-    // Sort the posts by id in descending order
     const sortedAnswers = answer.slice().sort((a, b) => b.id - a.id);
 
-    // Map through the sorted answers and display them
     bodyContent = sortedAnswers.map((answer) => (
       <div key={answer.id}>
         <p>{answer.answer}</p>
       </div>
     ));
   } else {
-    // Display the error message
     bodyContent = <div>{answerError}</div>;
   }
-  //<div>{bodyContent}</div>
+
+  const onSaveQuestionClicked = async (formValues) => {
+    const { answer } = formValues;
+    try {
+      await dispatch(
+        addAnswer({
+          answer,
+        })
+      ).unwrap();
+
+      navigate("/");
+    } catch (err) {
+      console.error("Failed to save the answer", err);
+    } finally {
+    }
+  };
 
   return (
     <div className={classes.homeContainer}>
@@ -152,21 +162,17 @@ const Answers = () => {
           <Formik
             initialValues={INITIAL_VALUES}
             validationSchema={answerSchema}
-            onSubmit={({ setSubmitting }) => {
-              alert("Form is validated! Submitting the form");
-              navigate("/answers");
-              setSubmitting(false);
-            }}
+            onSubmit={onSaveQuestionClicked()}
           >
             {({ errors, touched }) => (
               <Form>
                 <div className={classes.questionForm}>
                   <div className="form-group">
-                    <label htmlFor="description">Answer The The Question</label>
+                    <label htmlFor="answer">Answer The The Question</label>
                     <br />
                     <Field
                       type="field"
-                      name="description"
+                      name="answer"
                       className={classes.descriptionField}
                     />
                     {errors.description && touched.descripttion ? (
@@ -187,9 +193,6 @@ const Answers = () => {
           </Formik>
         </Modal>
         <div className="accordion">
-          {/* {accordionData.map(({ title, content }) => (
-          <Accordion title={title} content={content} />
-        ))} */}
           <div className="accordion-item">
             <div
               className="accordion-title"
@@ -204,34 +207,8 @@ const Answers = () => {
                 answer?.map((item, index) => (
                   <div>
                     <div className={classes.homeCard}>
-                      <div className={classes.votesSection}>
-                        <GoTriangleUp
-                          onClick={() => {
-                            handleUpVote(item);
-                          }}
-                        />
-                        <br />
-                        {item.count}
-                        <br />
-                        <GoTriangleDown
-                          onClick={() => {
-                            handleDownVote(item);
-                          }}
-                        />
-                        {item?.prefered === true ? <FcAcceptDatabase /> : null}
-                      </div>
-                      <div className={classes.questionSections}>
-                        <p style={{ width: "60vw" }}>{item.answer}</p>
-                      </div>
-                      <ul className={classes.anSwerDetail}>
-                        <li>
-                          <span>{moment(item.date_answered).fromNow()}</span>
-                        </li>
-                        <li></li>
-                      </ul>
-
                       <div className="answer_container">
-                        {user_name === item.username ? (
+                        {user_id === item.user_id ? (
                           <div className="accept_answer">
                             <BsCloudCheckFill
                               onClick={() => {
@@ -261,6 +238,45 @@ const Answers = () => {
                           </div>
                         ) : null}
                       </div>
+                      <div className={classes.votesSection}>
+                        <button
+                          onClick={() => {
+                            handleUpVote(item);
+                          }}
+                        >
+                          <GoTriangleUp />
+                          <br />
+                        </button>
+                        <span style={{ paddingLeft: "2px" }}>
+                          {item.count}
+                          {item?.prefered === true ? (
+                            <i
+                              class="fa fa-check"
+                              style={{
+                                color: "green",
+                                fontSize: "20px",
+                                paddingLeft: "6px",
+                              }}
+                            ></i>
+                          ) : null}
+                        </span>
+                        <br />
+                        <GoTriangleDown
+                          onClick={() => {
+                            handleDownVote(item);
+                          }}
+                        />
+                        {item?.prefered === true ? <FcAcceptDatabase /> : null}
+                      </div>
+                      <div className={classes.questionSections}>
+                        <p style={{ width: "60vw" }}>{item.answer}</p>
+                      </div>
+                      <ul className={classes.anSwerDetail}>
+                        <li>
+                          <span>{moment(item.date_answered).fromNow()}</span>
+                        </li>
+                        <li></li>
+                      </ul>
                     </div>
                     <div className="comment-btn">
                       <div
@@ -277,17 +293,12 @@ const Answers = () => {
                     </div>
                     <div className="comment_add">
                       {show === index ? (
-                        <Comment
-                          answer_id={item?.answer_id}
-                          question_id={item?.question_id}
-                        />
+                        <Comment answer_id={item?.answer_id} />
                       ) : null}
                     </div>
                   </div>
                 ))
               )}
-              {/* <div>{isActive ? "-" : "+"}</div>
-              {isActive && <div className="accordion-content">Comments</div>} */}
             </div>
           </div>
         </div>

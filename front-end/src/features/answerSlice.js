@@ -26,13 +26,11 @@ export const getAnswers = createAsyncThunk(
 
 export const addAnswer = createAsyncThunk(
   "answers/addAnswer",
-  async (initialAnswer, thunkAPI) => {
-    try {
-      const res = await axios.post(URL, initialAnswer);
-      return res.data;
-    } catch (err) {
-      return thunkAPI.rejectedWithValue({ error: err.message });
-    }
+  async (initialQuestion) => {
+    const response = await axios
+      .post(URL, initialQuestion, {headers:setHeaders ()})
+      .then((data) => data.json());
+    return response.data;
   }
 );
 
@@ -41,7 +39,7 @@ export const updateAnswer = createAsyncThunk(
   async (data) => {
     // console.log(data);
     const response = await axios
-      .put(`${URL}/${data.id}`, data)
+      .put(`${URL}/${data.id}`, data, { headers: setHeaders() })
       .then((data) => data.data);
     return response;
   },
@@ -50,11 +48,7 @@ export const updateAnswer = createAsyncThunk(
 
 export const VoteAnswer = createAsyncThunk("votes/voteAnswer", async (data) => {
   const response = await axios
-    .post(
-      `${URL}/vote/${data.answer_id}`,
-      data
-      //  { headers: authHeader() }
-    )
+    .post(`${URL}/vote/${data.answer_id}`, data, { headers: setHeaders() })
     .then((data) => data.data);
   return response;
 });
@@ -62,11 +56,7 @@ export const VoteAnswer = createAsyncThunk("votes/voteAnswer", async (data) => {
 export const preferedAnswer = createAsyncThunk("accepted", async (data) => {
   console.log(data);
   const response = await axios
-    .put(
-      `${URL}/prefered`,
-      data
-      //  { headers: setHeaders() }
-    )
+    .put(`${URL}/prefered`, data, { headers: setHeaders() })
     .then((data) => data.data);
   return response;
 });

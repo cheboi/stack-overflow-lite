@@ -8,10 +8,10 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 
 import classes from "./askquestion.module.css";
-const INITIAL_VALUES = { questiontitle: "", description: "" };
+const INITIAL_VALUES = { title: "", description: "" };
 
 const questionSchema = Yup.object().shape({
-  questiontitle: Yup.string()
+  title: Yup.string()
     .min(2, "Too Short!")
     .max(50, "Too Long!")
     .required("Required"),
@@ -22,16 +22,8 @@ const AskquestionForm = () => {
 
   const dispatch = useDispatch();
 
-  // const [title, setTitle] = useState("");
-  // const [description, setDescription] = useState("");
-
   const [addRequestStatus, setAddRequestStatus] = useState("idle");
 
-  // const onTitleChanged = (e) => setTitle(e.target.value);
-  // const onDescriptionChanged = (e) => setDescription(e.target.value);
-
-  // const canSave =
-  //   [title, description].every(Boolean) && addRequestStatus === "idle";
 
   const onSaveQuestionClicked = async (formValues) => {
     const { questiontitle, description } = formValues;
@@ -66,11 +58,11 @@ const AskquestionForm = () => {
               <br />
               <Field
                 type="text"
-                name="questiontitle"
+                name="title"
                 className={classes.questionTitle}
               />
-              {errors.descriptiontitle && touched.description ? (
-                <div>{errors.descriptiontitle}</div>
+              {errors.title && touched.description ? (
+                <div>{errors.title}</div>
               ) : null}
             </div>
             <div className="form-group">

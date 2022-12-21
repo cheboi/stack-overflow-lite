@@ -16,6 +16,6 @@ answerRoute.get("/question/:id", getAnswers);
 // answerRoute.post("/:question_id", getAnswer);
 answerRoute.put("/:id",verifyToken, editAnswer);
 answerRoute.put("/prefered/:id",verifyToken,  markAsPreferedAnswer);
-answerRoute.post("/vote/:answer_id",verifyToken, downUpVote);
+answerRoute.post("/vote/:answer_id",downUpVote);
 
 module.exports = { answerRoute };

@@ -1,28 +1,29 @@
 import React from "react";
 import moment from "moment";
-import { getAnswers } from "../../Redux/Slices/AnswerSlice";
 import { useNavigate } from "react-router-dom";
-import Profile from "./Profile";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteQuestion } from "../../Redux/Slices/userSlice";
+import { deleteQuestion } from "../../features/userSlice";
+
 export default function UserQuestions() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user.Profile);
+  const user = useSelector((state) => state.user?.user);
   const loading = useSelector((state) => state.user.isLoading);
+
   const handleAnswers = (question_id) => {
     dispatch(getAnswers(question_id));
     navigate("/answers");
   };
+
   const deletequestion = (data) => {
-    console.log(data);
     dispatch(deleteQuestion(data));
   };
+  
   if (!loading) return <>Loading</>;
   return (
     <div className="container-profile">
       <div className="user-profile-6">
-        <Profile />
+        User info
       </div>
       <div className="answers">
         {user[1]?.userQuestions?.length === 0 ? (

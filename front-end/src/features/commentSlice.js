@@ -13,8 +13,8 @@ export const getComments = createAsyncThunk(
   async (data) => {
     let Comments = [];
     const response = await axios
-      .post(`${url}/${data}`, data
-      // , {headers:setHeaders ()}
+      .get(`${url}/${data}`, data
+      , {headers:setHeaders ()}
       )
       .then((data) => data.data);
     Comments = [...response];

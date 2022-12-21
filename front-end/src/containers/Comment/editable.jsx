@@ -5,7 +5,7 @@ import "./editable.css";
 import { addComment } from "../../features/commentSlice"
 const INITIAL_HEIGHT = 20;
 
-export default function Editable({ answer_id, question_id}) {
+export default function Editable({ answer_id}) {
   const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
   const [commentValue, setCommentValue] = useState("");
@@ -39,7 +39,7 @@ export default function Editable({ answer_id, question_id}) {
   const onSubmit = (e) => {
     e.preventDefault();
     dispatch(
-      addComment({ comment_descprition: commentValue, answer_id: answer_id, question_id:question_id })
+      addComment({ comment_descprition: commentValue, answer_id: answer_id })
     );
     setCommentValue("");
   };

@@ -27,15 +27,15 @@ const signupUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   try {
-    const {  email, password } = req.body;
+    const { email, password } = req.body;
 
     const user = await (await exec("getUser", { email })).recordset[0];
     if (user) {
       // check password
       const checkPassword = await bcrypt.compare(password, user.password);
-      console.log(checkPassword);
       if (checkPassword) {
-        const { password, id, ...payload } = user;
+        const { password, ...payload } = user;
+      
         const token = jwt.sign(payload, process.env.SECRET_KEY, {
           expiresIn: "120890890s",
         });
@@ -58,12 +58,11 @@ const getUser = async (req, res) => {
     const token = req.headers["x-access-token"];
     const decode = jwt_decode(token);
     const id = decode.id;
+    console.log(id);
     const response = await (await exec("uspGetUser", { id })).recordsets;
     let user = { user: response[0] };
     let userQuestions = { userQuestions: response[1] };
-    let userAnswers = { userAnswers: response[2] };
-    let userComments = { userComments: response[3] };
-    let profile = [user, userQuestions, userAnswers, userComments];
+    let profile = [user, userQuestions];
     res.json(profile);
   } catch (error) {
     res.status(404).json({ error: error.message });

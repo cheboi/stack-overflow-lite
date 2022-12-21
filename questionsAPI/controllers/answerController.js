@@ -1,10 +1,10 @@
 const sqlConfig = require("../config/index");
 const mssql = require("mssql");
-const jwt_decode = require('jwt-decode');
+const jwt_decode = require("jwt-decode");
 const uuid = require("uuid");
 const moment = require("moment");
 require("dotenv").config();
-const { exec } = require("../DatabaseHelpers/dbhelper") ;
+const { exec } = require("../DatabaseHelpers/dbhelper");
 const addAnswer = async (req, res) => {
   try {
     // const user_email = req.headers["user_id"];
@@ -80,25 +80,21 @@ const getAnswers = async (req, res) => {
   try {
     const { id } = req.params;
     const response = await (await exec("uspGetAnswers", { id })).recordsets;
-    let answers=response[0]
-    for (let i of response[0]){
-      i.count=0
-      let upvote=0
-      let downvote=0
-      for(let j of response[1]){
-        if(i.answer_id===j.answer_id && j.Vote===true){
-          upvote+=1
+    let answers = response[0];
+    for (let i of response[0]) {
+      i.count = 0;
+      let upvote = 0;
+      let downvote = 0;
+      for (let j of response[1]) {
+        if (i.answer_id === j.answer_id && j.Vote === true) {
+          upvote += 1;
+        } else if (i.answer_id === j.answer_id && j.Vote === false) {
+          downvote += 1;
+        } else {
+          i.count = 0;
         }
-        else if(i.answer_id===j.answer_id && j.Vote===false){
-          downvote+=1
-        }
-        else{
-          i.count=0
-
-        }
-        i.count=upvote-downvote
+        i.count = upvote - downvote;
       }
-
     }
     res.json(answers);
   } catch (error) {
@@ -109,11 +105,12 @@ const getAnswers = async (req, res) => {
 const downUpVote = async (req, res) => {
   try {
     const token = req.headers["x-access-token"];
-    const decoded=jwt_decode(token);
-    const user_id=decoded.user_id
-    const { answer_id,Vote } = req.body;
+    const decoded = jwt_decode(token);
+    const user_id = decoded.id;
+    console.log(req.body);
+    const { answer_id, Vote } = req.body;
     await (
-      await exec("inserUpdateVote", {
+      await exec("insertUpdateVote", {
         user_id,
         answer_id,
         Vote,
@@ -132,5 +129,5 @@ module.exports = {
   getAnswer,
   markAsPreferedAnswer,
   getAnswers,
-  downUpVote
+  downUpVote,
 };

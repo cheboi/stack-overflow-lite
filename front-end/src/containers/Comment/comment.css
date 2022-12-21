@@ -1,0 +1,71 @@
+.addtext {
+    font-size: large;
+  }
+  .addtext textarea {
+    display: block;
+    text-align: left;
+    margin: 10px;
+    width: 90%;
+    height: 65%;
+  }
+  .addtext label {
+    display: block;
+    text-align: left;
+  }
+  .addtext > input[type="submit"] {
+    width: 40%;
+    color: white;
+    padding: 10px;
+    margin: 3px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .comment_ {
+    display: flex;
+    flex-direction: column;
+    padding-left: 30%;
+  }
+  
+  .comments-box {
+    display: flex;
+  }
+  .comment-text {
+    margin-top: 5px;
+    padding: 10px;
+    border-radius: 4px;
+    width: 100%;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    flex: 1;
+  }
+  .comments-box {
+    flex: 1;
+  }
+  .comment-main-box {
+    width: 97%;
+    margin-right: 20px;
+  }
+  .comment-text-box {
+    display: flex;
+    flex: 1;
+  }
+  .addcomment {
+    display: inline;
+    margin-bottom: 1%;
+    margin-right: 2%;
+  }
+  .addcomment input {
+    width: 85%;
+    height:20px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+  .addcomment button{
+    width: 12%;
+    height: 26px;
+    cursor: pointer;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-left: 0cm;
+  }

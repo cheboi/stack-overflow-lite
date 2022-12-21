@@ -122,7 +122,7 @@ const searchQuesstion = async (req, res) => {
     const { value } = req.query;
     console.log(value);
     const questions =
-      (await (await exec("uspsearchQuestion", { value })).recordsets) || [];
+      (await (await exec("uspsearchQuestion", { value })).recordset) || [];
 
     const qn = await exec("uspsearchQuestion", { value });
 
@@ -154,48 +154,12 @@ const getUserQuestions = async (req, res) => {
 };
 
 const getMostAnsweredQuestion = async (req, res) => {
-  // try {
-  //   const { range } = req.query;
-  //   const pool = await mssql.connect(sqlConfig);
-  //   const response = await pool.request().execute("uspMostAnsweredQuestions");
-  //   const questions = await response.recordset;
-  //   res.json(questions);
-  // } catch (error) {
-  //   res.status(404).json({ error: error.message });
-  // }
-
   try {
-    const { range } = req.query;
-
-    const questions = await (
-      await execute("uspMostAnsweredQuestions", { range })
-    ).recordset;
-
-    if (questions.length > 0) {
-      let qnFilter = questions.map((qn) => {
-        return qn.id;
-      });
-
-      const allQuestions = await (await execute("getQuestions")).recordset;
-
-      const filteredData = allQuestions.filter((question) =>
-        qnFilter.includes(question.id)
-      );
-
-      return res.status(200).json({
-        msg: "Questions fetched successfully",
-        data: filteredData,
-      });
-    } else {
-      return res.status(404).json({
-        msg: "Your have more than those questions",
-        data: [],
-      });
-    }
+    const response = await exec("mostAnswerQuestion");
+    const questions = await response.recordset;
+    res.json(questions);
   } catch (error) {
-    return res.status(500).json({
-      msg: error,
-    });
+    res.status(404).json({ error: error.message });
   }
 };
 

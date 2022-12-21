@@ -1,0 +1,77 @@
+.container_container {
+  width: 100%;
+}
+.text_area textarea {
+  font-family: var(--font-family);
+  border: none;
+  resize: none;
+}
+.text_area textarea::placeholder {
+  color: gray;
+}
+.container_container label {
+  height: 0;
+  width: 0;
+  visibility: hidden;
+}
+.container_container button {
+  cursor: pointer;
+}
+.container_container button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.actions button[type="submit"] {
+  width: 14%;
+  color: black;
+  background-color: #90adc6;
+}
+.container_container .comment-box {
+  margin: 10px;
+  background: var(--white);
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  padding: 14px;
+  max-height: 20px;
+}
+.container_container .comment-field {
+  color: black;
+  font-size: 18px;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  padding: 0;
+  min-height: 40px;
+  transform: translateY(-32px);
+  line-height: 1;
+}
+.container_container .comment-box.expanded .comment-field {
+  transform: translateY(40px);
+}
+.container_container .comment-box.expanded .header {
+  transform: translateY(10px);
+  opacity: 1;
+  visibility: visible;
+}
+.actions {
+  width: 90%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20%;
+  opacity: 0;
+}
+.container_container .comment-box.expanded .actions {
+  opacity: 1;
+}
+.container_container .actions button {
+  margin-left: 6px;
+  border: none;
+  line-height: 1;
+}
+.container_container .actions .cancel {
+  background: none;
+}
+.container_container .comment-box.modified {
+  max-height: unset;
+}

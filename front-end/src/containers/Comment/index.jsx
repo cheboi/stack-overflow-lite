@@ -6,7 +6,7 @@ import moment from "moment";
 import Editable from "./editable";
 
 
-export default function Comment({ answer_id, question_id }) {
+export default function Comment({ answer_id }) {
   const Comments = useSelector((state) => state.comment.Comments);
   const loading = useSelector((state) => state.comment.isLoading);
   const dispatch = useDispatch();
@@ -21,7 +21,7 @@ export default function Comment({ answer_id, question_id }) {
   return (
     <div className="comment_">
       <div className="addcomment">
-        <Editable answer_id={answer_id} question_id={question_id} />
+        <Editable answer_id={answer_id} />
       </div>
       {Comments.length === 0 ? (
         <p> No comment yet be the firstone to comment</p>

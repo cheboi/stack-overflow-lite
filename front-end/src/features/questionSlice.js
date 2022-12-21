@@ -9,6 +9,7 @@ const initialState = {
   search: [],
   status: "idle", //'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
+  total: 0,
 };
 
 export const getQuestions = createAsyncThunk(
@@ -31,19 +32,15 @@ export const askQuestion = createAsyncThunk(
 );
 
 export const searchQuestions = createAsyncThunk(
-  //http://localhost:4000/questions/question/search/
   "search/searchQuestions",
-  async (data) => {
-    let search = [];
-    const response = await axios
-      .post(`${URL}/question/search/`, {
-        params: {
-          value: data,
-        },
-      })
-      .then((data) => data.data);
-    search = [...response];
-    return search;
+  async (search) => {
+    const res = await axios.get(`${URL}/question/search/`, {
+      params: {
+        value: search
+      }
+    });
+    const data  = res.data.questions;
+    return data;
   }
 );
 
@@ -68,10 +65,13 @@ export const getRecentAskedQuestions = createAsyncThunk(
 export const getMostAnsweredQuestions = createAsyncThunk(
   "questions/getMostAnsweredQuestions",
   async () => {
-    const response = await axios.get(`${URL}/question/mostanseredquestion`);
-    const { data } = response.data;
-    return data;
-  }
+    let MostAnswer = [];
+    const response = await axios.get(`${URL}/question/mostanseredquestion`, 
+    { headers: setHeaders() }).then((data) =>data.data);
+    MostAnswer = [...response];
+    console.log(MostAnswer);
+    return MostAnswer;  
+  },
 );
 
 export const questionSlice = createSlice({
@@ -100,6 +100,7 @@ export const questionSlice = createSlice({
       .addCase(getQuestions.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.questions = action.payload;
+        state.total = action.payload.total;
       })
       .addCase(getQuestions.rejected, (state, action) => {
         state.status = "failed";
@@ -123,5 +124,6 @@ export const questionSlice = createSlice({
 export const selectAllQuestions = (state) => state.questions?.questions;
 export const getQuestionStatus = (state) => state.questions?.status;
 export const getErrorStatus = (state) => state.questions?.error;
+export const selectTotal = (state) => state.questions?.total;
 
 export default questionSlice.reducer;
