@@ -28,11 +28,11 @@ const Login = () => {
   return (
     <form onSubmit={handleSubmit(submitForm)} style={{paddingTop: '80px'}}>
       {error && <Error>{error}</Error>}
-      <div className='form-group'>
+      <div className='cardcontainer'>
         <label htmlFor='email'>Email</label>
         <input
           type='email'
-          className='form-input'
+          className='descriptionField'
           {...register('email')}
           required
         />

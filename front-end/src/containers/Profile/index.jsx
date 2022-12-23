@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 // import "./profile.css";
 export default function Profile() {
-  const Profile = useSelector((state) => state.user.Profile);
+  const Profile = useSelector((state) => state.user.user);
   const loading = useSelector((state) => state.user.isLoading);
 
   if (!loading) return <>Loading</>;

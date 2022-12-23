@@ -1,86 +1,93 @@
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import Error from '../../components/error'
-import Spinner from '../../components/spinner'
-import { registerUser } from '../../features/authSlice';
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Error from "../../components/error";
+import Spinner from "../../components/spinner";
+import { registerUser } from "../../features/authSlice";
+
+import "./signup.css";
 
 const Register = () => {
-  const [customError, setCustomError] = useState(null)
+  const [customError, setCustomError] = useState(null);
 
   const { loading, userInfo, error, success } = useSelector(
     (state) => state.auth
-  )
-  const dispatch = useDispatch()
+  );
+  const dispatch = useDispatch();
 
-  const { register, handleSubmit } = useForm()
-  const navigate = useNavigate()
+  const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // redirect authenticated user to profile screen
-    if (userInfo) navigate('/user-profile')
-    // redirect user to login page if registration was successful
-    if (success) navigate('/login')
-  }, [navigate, userInfo, success])
+    if (userInfo) navigate("/user-profile");
+    if (success) navigate("/login");
+  }, [navigate, userInfo, success]);
 
   const submitForm = (data) => {
-    // check if passwords match
     if (data.password !== data.confirmPassword) {
-      setCustomError('Password mismatch')
-      return
+      setCustomError("Password mismatch");
+      return;
     }
-    // transform email string to lowercase to avoid case sensitivity issues in login
-    data.email = data.email.toLowerCase()
+    data.email = data.email.toLowerCase();
 
-    dispatch(registerUser(data))
-  }
+    dispatch(registerUser(data));
+  };
 
   return (
-    <form onSubmit={handleSubmit(submitForm)}>
+    <form onSubmit={handleSubmit(submitForm)} class="cardContainer">
       {error && <Error>{error}</Error>}
       {customError && <Error>{customError}</Error>}
-      <div className='form-group' style={{paddingTop:"90px"}}>
-        <label htmlFor='username'>User Name</label>
+      <div className="formControl" style={{ paddingTop: "90px" }}>
+        <h3>lets get started </h3>
+        <br />
+        <h5>create account</h5>
+        <br />
+        <label htmlFor="username">User Name</label> <br />
         <input
-          type='text'
-          className='form-input'
-          {...register('username')}
+          type="text"
+          className="form-input"
+          {...register("username")}
           required
         />
       </div>
-      <div className='form-group'>
-        <label htmlFor='email'>Email</label>
+
+      <br />
+      <div className="formControl">
+        <label htmlFor="email">Email</label> <br />
         <input
-          type='email'
-          className='form-input'
-          {...register('email')}
+          type="email"
+          className="form-input"
+          {...register("email")}
           required
         />
       </div>
-      <div className='form-group'>
-        <label htmlFor='password'>Password</label>
+      <br />
+      <div className="formControl">
+        <label htmlFor="password">Password</label> <br />
         <input
-          type='password'
-          className='form-input'
-          {...register('password')}
+          type="password"
+          className="form-input"
+          {...register("password")}
           required
         />
       </div>
-      <div className='form-group'>
-        <label htmlFor='email'>Confirm Password</label>
+      <br />
+      <div className="formControl">
+        <label htmlFor="email">Confirm Password</label> <br />
         <input
-          type='password'
-          className='form-input'
-          {...register('confirmPassword')}
+          type="password"
+          className="form-input"
+          {...register("confirmPassword")}
           required
         />
       </div>
-      <button type='submit' className='button' disabled={loading}>
-        {loading ? <Spinner /> : 'Register'}
+      <br />
+      <button type="submit" className="button" disabled={loading}>
+        {loading ? <Spinner /> : "Register"}
       </button>
     </form>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;

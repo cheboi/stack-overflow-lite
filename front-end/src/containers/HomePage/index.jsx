@@ -66,10 +66,6 @@ const Home = () => {
     setSortButton(text);
   };
 
-  // const getMostAnswer = () => {
-  //   dispatch(getmostAsnswers());
-  // };
-
   useEffect(() => {
     if (sortButton === "all") {
       dispatch(getQuestions());
@@ -82,13 +78,6 @@ const Home = () => {
     }
   }, [sortButton, searchValue]);
 
-  // useEffect(() => {
-  //   dispatch(getQuestions());
-
-  //   if (questionStatus === "idle") {
-  //     dispatch(getQuestions());
-  //   }
-  // }, []);
 
   const handleAnswers = (id) => {
     dispatch(getAnswers(id));
