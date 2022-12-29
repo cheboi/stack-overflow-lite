@@ -1,5 +1,9 @@
+.containier-login {
+  padding-top: 70px;
+}
+
 .signContinue {
-  padding-top: 130px;
+  padding-top: 10px;
   background: #ebebeb;
   align-self: center;
   width: 420px;
@@ -7,6 +11,7 @@
   font-size: 16px;
   margin-top: 40px;
   padding-left: 16px;
+  border-radius: 20px;
 }
 .welcome-sign {
   margin-top: auto;
@@ -20,6 +25,7 @@
   border-radius: 20px;
 }
 input[type="email"],
+input[type="text"],
 input[type="password"] {
   width: 95%;
   padding: 12px 20px;
@@ -27,16 +33,18 @@ input[type="password"] {
   display: inline-block;
   border: 1px solid #ccc;
   box-sizing: border-box;
+  border-radius: 8px;
 }
 
 .btnPrimary {
-  background-color:#90A1D8;
+  background-color: #90a1d8;
   color: white;
   padding: 14px 20px;
   margin: 8px 0;
   border: none;
   cursor: pointer;
   width: 95%;
+  border-radius: 8px;
 }
 .formGroup {
   margin-bottom: 20px;

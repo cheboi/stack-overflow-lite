@@ -6,7 +6,7 @@ import Error from "../../components/error";
 import Spinner from "../../components/spinner";
 import { registerUser } from "../../features/authSlice";
 
-import "./signup.css";
+import "./Login.css";
 
 const Register = () => {
   const [customError, setCustomError] = useState(null);
@@ -35,58 +35,60 @@ const Register = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(submitForm)} class="cardContainer">
-      {error && <Error>{error}</Error>}
-      {customError && <Error>{customError}</Error>}
-      <div className="formControl" style={{ paddingTop: "90px" }}>
-        <h3>lets get started </h3>
-        <br />
-        <h5>create account</h5>
-        <br />
-        <label htmlFor="username">User Name</label> <br />
-        <input
-          type="text"
-          className="form-input"
-          {...register("username")}
-          required
-        />
-      </div>
+    <div className="containier-login">
+      <form onSubmit={handleSubmit(submitForm)} class="signContinue">
+        <div className="welcome-sign">
+          <h3>Lets Get Started</h3>
+          <h5>Create Your Account</h5>
+        </div>
+        {error && <Error>{error}</Error>}
+        {customError && <Error>{customError}</Error>}
+        <div className="form-control">
+          <label htmlFor="username">User Name</label>
+          <input
+            type="text"
+            className="form-input"
+            {...register("username")}
+            required
+          />
+        </div>
 
-      <br />
-      <div className="formControl">
-        <label htmlFor="email">Email</label> <br />
-        <input
-          type="email"
-          className="form-input"
-          {...register("email")}
-          required
-        />
-      </div>
-      <br />
-      <div className="formControl">
-        <label htmlFor="password">Password</label> <br />
-        <input
-          type="password"
-          className="form-input"
-          {...register("password")}
-          required
-        />
-      </div>
-      <br />
-      <div className="formControl">
-        <label htmlFor="email">Confirm Password</label> <br />
-        <input
-          type="password"
-          className="form-input"
-          {...register("confirmPassword")}
-          required
-        />
-      </div>
-      <br />
-      <button type="submit" className="button" disabled={loading}>
-        {loading ? <Spinner /> : "Register"}
-      </button>
-    </form>
+        <br />
+        <div className="form-control">
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            className="form-input"
+            {...register("email")}
+            required
+          />
+        </div>
+        <br />
+        <div className="formControl">
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            className="form-input"
+            {...register("password")}
+            required
+          />
+        </div>
+        <br />
+        <div className="form-control">
+          <label htmlFor="email">Confirm Password</label>
+          <input
+            type="password"
+            className="form-input"
+            {...register("confirmPassword")}
+            required
+          />
+        </div>
+        <br />
+        <button type="submit" className="btnPrimary" disabled={loading}>
+          {loading ? <Spinner /> : "Register"}
+        </button>
+      </form>
+    </div>
   );
 };
 
